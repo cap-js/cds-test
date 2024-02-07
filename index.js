@@ -1,4 +1,11 @@
-const cds = require('@sap/cds')
-cds.test = require('./lib/cds-test')
+const cds = module.exports = require('@sap/cds')
 
-module.exports = cds
+class CdsTest {
+
+  get test() {
+    return super.test = require('./lib/cds-test')
+  }
+
+}
+
+cds.extend (cds.constructor) .with (CdsTest)
