@@ -1,0 +1,9 @@
+{
+  "name": "@cap-js/test-sample-app",
+  "dependencies": {
+    "@sap/cds": "^7"
+  },
+  "devDependencies": {
+    "@cap-js/test": "file:../.."
+  }
+}
