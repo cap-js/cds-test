@@ -33,6 +33,7 @@
     "@sap/cds": ">=7.3"
   },
   "devDependencies": {
+    "@cap-js/cds-test": "file:.",
     "@cap-js/sqlite": "^1.5.0",
     "axios": "^1",
     "eslint": "^8",

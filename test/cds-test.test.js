@@ -1,4 +1,4 @@
-const cds = require ('..') // '@cap-js/cds-test'
+const cds = require ('@cap-js/cds-test')
 
 const Books = 'sap.capire.bookshop.Books'
 
@@ -70,6 +70,18 @@ describe('cds.test', ()=>{
       should.equal(foobar.foo,'bar')
     })
 
+    it('should support chai.subset style', ()=>{
+      const { expect } = test, foobar = { foo:'bar' }
+      expect(foobar).to.containSubset({ foo:'bar' })
+    })
+
+    it('should support chai.eventually style', ()=>{
+      const { expect } = test
+      const asyncFunc = async () => { return { foo:'bar' } }
+      expect(asyncFunc()).to.eventually.have.property('foo')
+      const asyncFunc2 = async () => { throw new Error('message') }
+      expect(asyncFunc2()).to.eventually.be.rejectedWith('message')
+    })
   })
 
   describe ('axios', ()=> {
