@@ -11,10 +11,9 @@ describe('cds.test', ()=>{
     const bookshop = cds.utils.path.resolve(__dirname,'app')
     expect (cds.env._home) .to.equal (bookshop)
     expect (cds.root) .to.equal (bookshop)
-    const { server, url } = await test
-    expect (server).to.exist
-    expect (server.address()).to.exist
-    expect (url).to.match (/http:\/\/localhost:/)
+    expect (test.server).to.exist
+    expect (test.server.address()).to.exist
+    expect (test.url).to.match (/http:\/\/localhost:/)
   })
 
   it('should be thenable instances', async () => {
