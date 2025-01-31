@@ -13,16 +13,13 @@
   "main": "index.js",
   "files": [
     "lib/",
-    "index.js",
-    "README.md",
-    "CHANGELOG.md",
-    "LICENSE"
+    "index.js"
   ],
   "engines": {
-    "node": ">=14"
+    "node": ">=20"
   },
   "scripts": {
-    "test": "jest --silent"
+    "test": "npx -y jest --silent"
   },
   "dependencies": {
     "axios": "^1",
@@ -36,7 +33,7 @@
   "devDependencies": {
     "@cap-js/cds-test": "file:.",
     "@cap-js/sqlite": "^1.5.0",
-    "eslint": "^8",
+    "@sap/cds": "^8",
     "express": "^4.17.1"
   }
 }
