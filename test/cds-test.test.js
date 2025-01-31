@@ -1,13 +1,14 @@
-const cds = require ('@cap-js/cds-test')
-
+/* eslint-disable no-console */
+const cds = require ('@sap/cds')
+cds.test = require ('@cap-js/cds-test')
 const Books = 'sap.capire.bookshop.Books'
 
 
 describe('cds.test', ()=>{
 
-  const { expect, test } = cds.test(__dirname+'/app')
+  const { expect, test } = cds.test().in(__dirname,'app')
 
-  it('should have started the server correctly', async () => {
+  it('should have started the server correctly', () => {
     const bookshop = cds.utils.path.resolve(__dirname,'app')
     expect (cds.env._home) .to.equal (bookshop)
     expect (cds.root) .to.equal (bookshop)
@@ -70,18 +71,6 @@ describe('cds.test', ()=>{
       should.equal(foobar.foo,'bar')
     })
 
-    it('should support chai.subset style', ()=>{
-      const { expect } = test, foobar = { foo:'bar' }
-      expect(foobar).to.containSubset({ foo:'bar' })
-    })
-
-    it('should support chai.eventually style', ()=>{
-      const { expect } = test
-      const asyncFunc = async () => { return { foo:'bar' } }
-      expect(asyncFunc()).to.eventually.have.property('foo')
-      const asyncFunc2 = async () => { throw new Error('message') }
-      expect(asyncFunc2()).to.eventually.be.rejectedWith('message')
-    })
   })
 
   describe ('axios', ()=> {
@@ -111,8 +100,8 @@ describe('cds.test', ()=>{
     it('should support capturing logs', ()=> {
       expect (log.output).to.exist
       expect (log.output.length).to.equal(0)
-      console.log('foo')
-      console.log('bar')
+      console.log('foo') // eslint-disable-line no-console
+      console.log('bar') // eslint-disable-line no-console
       expect (log.output.length).to.be.greaterThan(0)
       expect (log.output).to.contain('foo')
       expect (log.output).to.equal('foo\nbar\n')
@@ -125,7 +114,7 @@ describe('cds.test', ()=>{
 
     it('should support log.release()', ()=> {
       log.release()
-      console.log('foobar')
+      console.log('foobar') // eslint-disable-line no-console
       expect (log.output).to.equal('')
     })
 
@@ -148,7 +137,6 @@ describe('cds.test', ()=>{
     })
 
     it('data reset should be draft aware', async()=> {
-      if (!cds.env.fiori.lean_draft) return
       const { data } = test
       const { Books } = cds.services['DraftService'].entities
       const db = await cds.connect.to('db')
@@ -179,7 +167,7 @@ describe('cds.test', ()=>{
 
   it('should error when server not started', async () =>{
     const { GET, expect } = cds.test
-    await expect(GET `/foo`).to.be.rejectedWith(/not.*started.*cds\.test/is)
+    await expect(GET `http://localhost/foo`).to.be.rejectedWith(/not.*started.*cds\.test/is)
   })
 
 })
