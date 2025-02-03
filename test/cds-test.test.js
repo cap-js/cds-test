@@ -1,12 +1,12 @@
 /* eslint-disable no-console */
 const cds = require ('@sap/cds')
-cds.test = require ('@cap-js/cds-test')
+const cds_test = require ('@cap-js/cds-test')
 const Books = 'sap.capire.bookshop.Books'
 
 
-describe('cds.test', ()=>{
+describe('cds_test', ()=>{
 
-  const { expect, test } = cds.test().in(__dirname,'app')
+  const { expect, test } = cds_test().in(__dirname,'app')
 
   it('should have started the server correctly', () => {
     const bookshop = cds.utils.path.resolve(__dirname,'app')
@@ -166,7 +166,7 @@ describe('cds.test', ()=>{
   })
 
   it('should error when server not started', async () =>{
-    const { GET, expect } = cds.test
+    const { GET, expect } = cds_test
     await expect(GET `http://localhost/foo`).to.be.rejectedWith(/not.*started.*cds\.test/is)
   })
 

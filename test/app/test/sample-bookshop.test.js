@@ -1,8 +1,7 @@
-const cds = require('@sap/cds')
-cds.test = require ('@cap-js/cds-test')
+const cds_test = require ('@cap-js/cds-test')
 
 describe('Sample tests from bookshop', () => {
-  const { GET, expect, axios } = cds.test (__dirname+'/..')
+  const { GET, expect, axios } = cds_test (__dirname+'/..')
   axios.defaults.auth = { username: 'alice', password: 'admin' }
 
   it('serves $metadata documents in v4', async () => {
