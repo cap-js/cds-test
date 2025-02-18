@@ -8,12 +8,11 @@
   ],
   "author": "SAP SE (https://www.sap.com)",
   "license": "SEE LICENSE IN LICENSE",
-  "repository": "cap-js/test",
+  "repository": "https://github.com/cap-js/cds-test",
   "homepage": "https://cap.cloud.sap/",
-  "main": "index.js",
+  "main": "lib/cds-test.js",
   "files": [
-    "lib/",
-    "index.js"
+    "lib/"
   ],
   "engines": {
     "node": ">=20"
