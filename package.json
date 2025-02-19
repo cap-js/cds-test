@@ -30,7 +30,6 @@
     "@sap/cds": ">=8"
   },
   "devDependencies": {
-    "@cap-js/cds-test": "file:.",
     "@cap-js/sqlite": "^1.5.0",
     "@sap/cds": "^8",
     "express": "^4.17.1"
