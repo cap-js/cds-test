@@ -167,7 +167,7 @@ describe('cds_test', ()=>{
 
   it('should error when server not started', async () =>{
     const { GET, expect } = cds_test
-    await expect(GET `http://localhost/foo`).to.be.rejectedWith(/not.*started.*cds\.test/is)
+    await expect(GET `http://localhost:7777/foo`).to.be.rejectedWith(/not.*started.*cds\.test/is)
   })
 
 })
