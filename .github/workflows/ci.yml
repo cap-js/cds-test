@@ -22,6 +22,6 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
-        # cache: 'npm'  # only if package-lock is present
-    - run: npm i
+        cache: 'npm'  # only if package-lock is present
+    - run: npm ci
     - run: npm test

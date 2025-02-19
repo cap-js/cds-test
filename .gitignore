@@ -1,12 +1,7 @@
 node_modules/
 _out/
-coverage/
-.xmake/
 gen/
-import/
-reports/
 @cds-models/
-package-lock.json
 .cdsrc-private.json
 .idea
 .DS_Store
@@ -15,11 +10,4 @@ package-lock.json
 *.sqlite
 *.sqlite-shm
 *.sqlite-wal
-junit.xml
 .vscode/
-.npmrc
-work/
-tsconfig.tsbuildinfo
-.babelrc
-
-!.vscode/settings.json

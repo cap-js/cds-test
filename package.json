@@ -1,7 +1,7 @@
 {
   "name": "@cap-js/cds-test",
   "version": "0.1.0",
-  "description": "CDS Test Support",
+  "description": "Test Support for CAP Node.js",
   "keywords": [
     "CAP",
     "CDS"
