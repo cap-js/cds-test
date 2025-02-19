@@ -18,7 +18,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test \"**/*.test.js\""
+    "test": "node --test \"**/*.test.js\"",
+    "test:jest": "npx -y jest"
   },
   "dependencies": {
     "axios": "^1",
