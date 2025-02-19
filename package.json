@@ -1,0 +1,38 @@
+{
+  "name": "@cap-js/cds-test",
+  "version": "0.1.0",
+  "description": "CDS Test Support",
+  "keywords": [
+    "CAP",
+    "CDS"
+  ],
+  "author": "SAP SE (https://www.sap.com)",
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": "https://github.com/cap-js/cds-test",
+  "homepage": "https://cap.cloud.sap/",
+  "main": "lib/cds-test.js",
+  "files": [
+    "lib/"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "axios": "^1",
+    "chai": "^4.4.1",
+    "chai-as-promised": "^7.1.1",
+    "chai-subset": "^1.6.0"
+  },
+  "peerDependencies": {
+    "@sap/cds": ">=8"
+  },
+  "devDependencies": {
+    "@cap-js/cds-test": "file:.",
+    "@cap-js/sqlite": "^1.5.0",
+    "@sap/cds": "^8",
+    "express": "^4.17.1"
+  }
+}
