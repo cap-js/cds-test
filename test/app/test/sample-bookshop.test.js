@@ -1,4 +1,4 @@
-const cds_test = require ('@cap-js/cds-test')
+const cds_test = require ('../../../lib/cds-test')
 
 describe('Sample tests from bookshop', () => {
   const { GET, expect, axios } = cds_test (__dirname+'/..')
