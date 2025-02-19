@@ -14,7 +14,25 @@ In your application project, just install the package as dev dependency:
 npm add -D @cap-js/cds-test
 ```
 
-TODO ...
+Add a simple test file `test/bookshop.test.js ` with this content:
+```js
+const cds = require ('@sap/cds')
+const { describe } = require('node:test')
+
+describe('Sample tests', () => {
+  const { GET, expect } = cds.test (__dirname+'/..')
+
+  it('serves Books', async () => {
+    const { data } = await GET `/odata/v4/catalog/Books`
+    expect(data.value.length).to.be.greaterThanOrEqual(5)
+  })
+})
+```
+
+and run it with
+```sh
+node --test
+```
 
 ## Support, Feedback, Contributing
 

@@ -1,13 +1,12 @@
 const cds_test = require ('../../../lib/cds-test')
+const { describe } = require('node:test')
 
-describe('Sample tests from bookshop', () => {
-  const { GET, expect, axios } = cds_test (__dirname+'/..')
-  axios.defaults.auth = { username: 'alice', password: 'admin' }
+describe('Sample tests', () => {
+  const { GET, expect } = cds_test (__dirname+'/..')
 
-  it('serves $metadata documents in v4', async () => {
-    const { data } = await GET `/browse/$metadata`
-    expect(data).to.contain('<EntitySet Name="Books" EntityType="CatalogService.Books">')
-    expect(data).to.contain('<Annotation Term="Common.Label" String="Currency"/>')
+  it('serves Books', async () => {
+    const { data } = await GET `/odata/v4/catalog/Books`
+    expect(data.value.length).to.be.greaterThanOrEqual(5)
   })
 
 })
