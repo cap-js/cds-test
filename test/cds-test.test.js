@@ -2,7 +2,7 @@
 const cds = require ('@sap/cds')
 const cds_test = require ('../lib/cds-test')
 const Books = 'sap.capire.bookshop.Books'
-
+const describe = global.describe ?? require('node:test').describe.describe
 
 describe('cds_test', ()=>{
 
@@ -169,7 +169,5 @@ describe('cds_test', ()=>{
     const { GET, expect } = cds_test
     await expect(GET `/foo`).to.be.rejectedWith(/not.*started.*cds\.test/is)
   })
-  // if (process.platform !== 'win32') { // on Windows, the
-  // }
 
 })
