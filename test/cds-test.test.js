@@ -167,7 +167,7 @@ describe('cds_test', ()=>{
 
   it('should error when server not started', async () =>{
     const { GET, expect } = cds_test
-    await expect(GET `http://localhost:80/foo`).to.be.rejectedWith(/not.*started.*cds\.test/is)
+    await expect(GET `/foo`).to.be.rejectedWith(/not.*started.*cds\.test/is)
   })
   // if (process.platform !== 'win32') { // on Windows, the
   // }
