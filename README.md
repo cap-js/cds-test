@@ -16,11 +16,10 @@ npm add -D @cap-js/cds-test
 
 Add a simple test file `test/bookshop.test.js ` with this content:
 ```js
-const cds = require ('@sap/cds')
-const { describe } = require('node:test')
+import cds from '@sap/cds'
 
 describe('Sample tests', () => {
-  const { GET, expect } = cds.test (__dirname+'/..')
+  const { GET, expect } = cds.test (import.meta.dirname+'/..')
 
   it('serves Books', async () => {
     const { data } = await GET `/odata/v4/catalog/Books`
@@ -29,10 +28,13 @@ describe('Sample tests', () => {
 })
 ```
 
-and run it with
+and run it with Jest, for example:
 ```sh
-node --test
+npx jest
 ```
+
+`node --test` and `mocha` runners are supported, too, though with less coverage in real-life projects.
+
 
 ## Support, Feedback, Contributing
 
