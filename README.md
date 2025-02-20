@@ -2,10 +2,10 @@
 
 ## About this project
 
-A library with utilities to write tests for CAP Node.js applications, like
-- Starting and stopping a CAP server before and after the test
+This is a library with test utilities for CAP Node.js applications, like
+- Starting and stopping a CAP server before and after tests
 - A bound HTTP client for the server
-- `chai` assertion helpers
+- `chai`-like assertion helpers
 
 ## Requirements and Setup
 
@@ -13,6 +13,8 @@ In your application project, just install the package as dev dependency:
 ```sh
 npm add -D @cap-js/cds-test
 ```
+
+## Usage
 
 Add a simple test file `test/bookshop.test.js ` with this content:
 ```js
@@ -28,12 +30,16 @@ describe('Sample tests', () => {
 })
 ```
 
-and run it with Jest, for example:
+Run it with Jest, for example:
 ```sh
 npx jest
 ```
 
 `node --test` and `mocha` runners are supported, too, though with less coverage in real-life projects.
+
+## Documentation
+
+See the [CAP documentation on `cds.test`](https://cap.cloud.sap/docs/node.js/cds-test) for more.
 
 
 ## Support, Feedback, Contributing
