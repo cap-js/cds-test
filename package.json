@@ -18,7 +18,9 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test \"**/*.test.js\""
+    "test": "node --test \"**/*.test.js\"",
+    "test:jest": "npx -y jest",
+    "test:mocha": "npx -y mocha \"test/**/*.test.js\""
   },
   "dependencies": {
     "axios": "^1",
