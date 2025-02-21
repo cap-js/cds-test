@@ -6,6 +6,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [0.1.2] - 2025-02-21
+
+### Added
+
+- Publish to NPM with provenance attestation
+
 ## [0.1.1] - 2025-02-21
 
 ### Fixed
