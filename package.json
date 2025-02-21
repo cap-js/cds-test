@@ -9,7 +9,7 @@
   "author": "SAP SE (https://www.sap.com)",
   "license": "SEE LICENSE IN LICENSE",
   "repository": {
-    "url": "https://github.com/cap-js/cds-test"
+    "url": "git+https://github.com/cap-js/cds-test"
   },
   "homepage": "https://cap.cloud.sap/",
   "main": "index.js",
