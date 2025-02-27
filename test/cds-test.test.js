@@ -2,7 +2,7 @@
 const cds = require ('@sap/cds')
 const cds_test = require ('..')
 const Books = 'sap.capire.bookshop.Books'
-const describe = global.describe ?? require('node:test').describe.describe
+const describe = global.describe ?? require('node:test').describe
 
 describe('cds_test', ()=>{
 
