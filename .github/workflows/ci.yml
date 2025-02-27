@@ -25,7 +25,18 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'  # only if package-lock is present
+
     - run: npm ci
-    - run: npm run test
-    - run: npm run test:jest
-    - run: npm run test:mocha
+
+    - name: Node
+      run: npm run test
+
+    - name: Jest
+      run: npm run test:jest
+
+    - name: Mocha
+      run: npm run test:mocha
+
+    - name: Chest
+      if: runner.os != 'Windows'
+      run: npm run test:chest
