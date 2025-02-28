@@ -6,9 +6,11 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [0.1.3] - tbd
+## [0.2.0] - tbd
 
-### Added
+### Changed
+
+- `@sap/cds` 8.8.0 is required at the minimum
 
 ## [0.1.2] - 2025-02-21
 
