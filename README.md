@@ -18,10 +18,10 @@ npm add -D @cap-js/cds-test
 
 Add a simple test file `test/bookshop.test.js ` with this content:
 ```js
-import cds from '@sap/cds'
+const cds = require('@sap/cds')
 
 describe('Sample tests', () => {
-  const { GET, expect } = cds.test (import.meta.dirname+'/..')
+  const { GET, expect } = cds.test (__dirname+'/..')
 
   it('serves Books', async () => {
     const { data } = await GET `/odata/v4/catalog/Books`
