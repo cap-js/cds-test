@@ -38,11 +38,11 @@
     "chai-subset": "^1.6.0"
   },
   "peerDependencies": {
-    "@sap/cds": ">=8"
+    "@sap/cds": ">=8.8"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^1.5.0",
-    "@sap/cds": "^8",
+    "@sap/cds": "^8.8",
     "express": "^4.17.1"
   }
 }

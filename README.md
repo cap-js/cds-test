@@ -14,9 +14,6 @@ In your application project, just install the package as dev dependency:
 npm add -D @cap-js/cds-test
 ```
 
-> [!IMPORTANT]
-> This package requires `@sap/cds` 8.8.0 or higher.  This version will be published beginning of March 2025.
-
 ## Usage
 
 Add a simple test file `test/bookshop.test.js ` with this content:
