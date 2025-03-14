@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 const cds = require ('@sap/cds')
-const cds_test = require ('..')
+const cds_test = require ('@cap-js/cds-test')
 const Books = 'sap.capire.bookshop.Books'
 const describe = global.describe ?? require('node:test').describe
 
@@ -138,7 +138,7 @@ describe('cds_test', ()=>{
 
     it('data reset should be draft aware', async()=> {
       const { data } = test
-      const { Books } = cds.services['DraftService'].entities
+      const { Books } = cds.entities('DraftService')
       const db = await cds.connect.to('db')
       expect(await db.run(SELECT.from(Books.drafts))).not.to.be.empty
 
