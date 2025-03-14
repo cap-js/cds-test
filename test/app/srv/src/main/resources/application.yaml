@@ -1,0 +1,45 @@
+cds:
+  security:
+    # Match mock users with default node mock users
+    mock:
+      users:
+      - name: alice
+        tenant: t1
+        roles:
+          - admin
+      - name: bob
+        tenant: t1
+        roles:
+          - builder
+      - name: carol
+        tenant: t1
+        roles:
+          - admin
+          - builder
+      - name: dave
+        tenant: t1
+        features:
+        roles:
+          - admin
+      - name: erin
+        tenant: t2
+        roles:
+          - admin
+          - builder
+      - name: fred
+        tenant: t2
+        features:
+          - isbn
+      - name: me
+        tenant: t1
+        features:
+          - "*"
+      - name: yves
+        roles:
+          - internal-user
+---
+spring:
+  config.activate.on-profile: default
+  sql.init.schema-locations: classpath:schema-h2.sql
+cds:
+  data-source.auto-config.enabled: false
