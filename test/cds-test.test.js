@@ -1,8 +1,6 @@
-/* eslint-disable no-console */
-const cds = require ('@sap/cds')
-const cds_test = require ('@cap-js/cds-test')
+const cds = require ('@sap/cds/lib') // using cds/lib here to bypass @types
+const cds_test = require ('..')
 const Books = 'sap.capire.bookshop.Books'
-const describe = global.describe ?? require('node:test').describe
 
 describe('cds_test', ()=>{
 

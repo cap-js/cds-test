@@ -12,10 +12,10 @@
     "url": "git+https://github.com/cap-js/cds-test"
   },
   "homepage": "https://cap.cloud.sap/",
-  "main": "index.js",
+  "main": "lib/cds-test.js",
   "bin": {
-    "cds-test": "bin/test.js",
-    "chest": "bin/test.js"
+    "cds-test": "bin/chest.js",
+    "chest": "bin/chest.js"
   },
   "files": [
     "bin/",
@@ -26,19 +26,17 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "node --test \"test/**/*.test.js\"",
-    "test:mocha": "npx -y mocha \"test/**/*.test.js\"",
-    "test:jest": "npx -y jest \"test/.*\\.test\\.js\"",
-    "test:chest": "cds-test test"
+    "test": "npm run -s test:chest && npm run -s test:node && npm run -s test:mocha && npm run -s test:jest",
+    "test:chest": "chest",
+    "test:jest": "npx -y jest",
+    "test:mocha": "npx -y mocha",
+    "test:node": "node --test"
   },
   "dependencies": {
     "axios": "^1",
     "chai": "^4.4.1",
     "chai-as-promised": "^7.1.1",
     "chai-subset": "^1.6.0"
-  },
-  "peerDependencies": {
-    "@sap/cds": ">=8.8"
   },
   "devDependencies": {
     "@cap-js/cds-test": "file://.",

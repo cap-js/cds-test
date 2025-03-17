@@ -1,8 +1,9 @@
-const { BRIGHT, BOLD, INVERT, GRAY, GREEN, RESET, LF='\n', DIMMED, YELLOW, RED } = require('@sap/cds').utils.colors
+const { BRIGHT, BOLD, INVERT, GRAY, GREEN, RESET, LF='\n', DIMMED, YELLOW, RED } = require('./colors')
 const PASS = '\x1b[38;5;244m'
 const FAIL = '\x1b[38;5;244m' // '\x1b[38;5;124m'
 const SKIP = RESET+DIMMED
 const { inspect } = require('node:util')
+const { relative } = require('node:path'), cwd = process.cwd()
 /* eslint-disable no-console */
 
 module.exports = function report_on (test,o) {
@@ -70,8 +71,8 @@ module.exports = function report_on (test,o) {
   function silent() {
     console.log() // start with an initial blank line
     test.on ('complete', root, x => {
-      if (x.details.passed) console.log (GREEN,' ✔', RESET+PASS, x.name)
-      else console.log (BRIGHT+RED,' X', RESET+RED, x.name, RESET)
+      if (x.details.passed) console.log (GREEN,' ✔', RESET+PASS, relative(cwd,x.name))
+      else console.log (BRIGHT+RED,' X', RESET+RED, relative(cwd,x.name), RESET)
     })
   }
 
@@ -100,9 +101,9 @@ module.exports = function report_on (test,o) {
     // report passed tests on leaf level
     test.on ('pass', leaf, x => {
       if (_recent_nesting > x.nesting && leaf(x)) console.log()
-      x.skip ? console.log(_indent4(x), YELLOW, '○' + SKIP, x.name, RESET) :
-      x.todo ? console.log(_indent4(x), YELLOW, '+' + SKIP, x.name, RESET) :
-      /*pass*/ console.log(_indent4(x), GREEN,  '✔' + PASS, x.name, RESET)
+      x.skip ? console.log(_indent4(x), YELLOW, '○' + SKIP, relative (cwd,x.name), RESET) :
+      x.todo ? console.log(_indent4(x), YELLOW, '+' + SKIP, relative (cwd,x.name), RESET) :
+      /*pass*/ console.log(_indent4(x), GREEN,  '✔' + PASS, relative (cwd,x.name), RESET)
       _recent_nesting = _recent?.nesting
       _recent = null
     })
@@ -110,7 +111,7 @@ module.exports = function report_on (test,o) {
     // report failed tests on leaf level
     test.on ('fail', leaf, x => {
       if (_recent_nesting > x.nesting && leaf(x)) console.log()
-      console.log(_indent4(x), BOLD+RED, 'X' + RESET+FAIL, x.name, RESET)
+      console.log(_indent4(x), BOLD+RED, 'X' + RESET+FAIL, relative (cwd,x.name), RESET)
       _recent_nesting = _recent?.nesting
       _recent = null
     })
