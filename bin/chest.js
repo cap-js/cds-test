@@ -44,7 +44,7 @@ Options:
 `
 
 const { DIMMED, YELLOW, GRAY, RESET } = require('./colors')
-const regex4 = s => !s ? null : RegExp (s.replace(/[,.*]/g, s => ({ ',': '\b|', '.': '\\.', '*': '.*' })[s]))
+const regex4 = s => !s ? null : RegExp (s.replace(/[,.*]/g, s => ({ ',': '|', '.': '\\.', '*': '.*' })[s]))
 const recent = () => {try { return require(home+'/.cds-test-recent.json') } catch {/* egal */}}
 const os = require('os'), home = os.userInfo().homedir
 
@@ -71,6 +71,7 @@ async function fetch (argv,o) {
   const tests = regex4 (o.match) || { test: ()=> true }
   const skip = regex4 (o.skip) || { test: ()=> false }
   const ignore = /^(\..*|node_modules|_out)$/
+  console.debug ({ patterns, tests, skip, ignore })
   const files = []
   const fs = require('node:fs'), path = require('node:path')
   const _read = fs.promises.readdir
