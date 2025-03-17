@@ -3,6 +3,7 @@
 
 
 const options = {
+  'timeout':  { type:'string',  short:'t' },
   'verbose':  { type:'boolean', short:'v' },
   'unmute':   { type:'boolean', short:'u' },
   'silent':   { type:'boolean', short:'s' },
@@ -12,9 +13,10 @@ const options = {
   'passed':   { type:'boolean' },
   'failed':   { type:'boolean' },
   'match':    { type:'string', default: '(.test.js|.spec.js)$' },
-  'skip':     { type:'string' },
+  'skip':     { type:'string', default: '_out,gen,*.tmp' },
+  'only':     { type:'string'},
   'help':     { type:'boolean', short:'h' },
-  'workers':  { type:'string' },
+  'workers':  { type:'string', short:'w' },
 }
 
 const USAGE = `
@@ -24,18 +26,21 @@ Usage:
 
 Options:
 
-  -v, --verbose  Increase verbosity
-  -u, --unmute   Unmute output
-  -s, --silent   No output
-  -q, --quiet    No output at all
   -l, --list     List found test files
+  -q, --quiet    No output at all
+  -s, --silent   No output
+  -t, --timeout  in milliseconds
+  -u, --unmute   Unmute output
+  -v, --verbose  Increase verbosity
+  -w, --workers  Specify number of workers
   -?, --help     Displays this usage info
 
-  --match        Test matching files (${options.match.default})
-  --skip         Skip matching files (${options.skip.default})
-  --recent       Run the last test suite(s)
-  --passed       Run only the last passed test suite(s)
-  --failed       Run only the last failed test suite(s)
+  --match        Pick matching files, default: ${options.match.default}
+  --skip         Skip matching files, default: ${options.skip.default}
+  --only         Run only the matching tests
+  --failed       Repeat recently failed test suite(s)
+  --passed       Repeat recently passed test suite(s)
+  --recent       Repeat recently run test suite(s)
 `
 
 const { DIMMED, YELLOW, GRAY, RESET } = require('./colors')
@@ -52,10 +57,11 @@ async function test (argv,o) {
   if (o.list) return list (o.files)
   if (o.skip) process.env._chest_skip = o.skip
   if (o.files.length > 1) console.log (DIMMED,`\nRunning ${o.files.length} test suites...`, RESET)
-  const test = require('node:test').run({
+  const test = require('node:test').run({ ...o,
     execArgv: [ '--require', require.resolve('../lib/fixtures/node-test.js') ],
+    timeout: +o.timeout || undefined,
     concurrency: +o.workers || true,
-    ...o,
+    testNamePatterns: regex4 (o.only), only: false,
   })
   require('./reporter')(test, test.options = o)
 }
