@@ -71,7 +71,6 @@ async function fetch (argv,o) {
   const tests = regex4 (o.match) || { test: ()=> true }
   const skip = regex4 (o.skip) || { test: ()=> false }
   const ignore = /^(\..*|node_modules|_out)$/
-  console.debug ({ patterns, tests, skip, ignore })
   const files = []
   const fs = require('node:fs'), path = require('node:path')
   const _read = fs.promises.readdir
