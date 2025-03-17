@@ -13,7 +13,7 @@ const options = {
   'passed':   { type:'boolean' },
   'failed':   { type:'boolean' },
   'match':    { type:'string', default: '(.test.js|.spec.js)$' },
-  'skip':     { type:'string', default: '_out,gen,*.tmp' },
+  'skip':     { type:'string', default: '^(gen,*.tmp)$' },
   'only':     { type:'string'},
   'help':     { type:'boolean', short:'h' },
   'workers':  { type:'string', short:'w' },
@@ -44,7 +44,7 @@ Options:
 `
 
 const { DIMMED, YELLOW, GRAY, RESET } = require('./colors')
-const regex4 = s => !s ? null : RegExp (s.replace(/[,.*]/g, s => ({ ',': '|', '.': '\\.', '*': '.*' })[s]))
+const regex4 = s => !s ? null : RegExp (s.replace(/[,.*]/g, s => ({ ',': '\b|', '.': '\\.', '*': '.*' })[s]))
 const recent = () => {try { return require(home+'/.cds-test-recent.json') } catch {/* egal */}}
 const os = require('os'), home = os.userInfo().homedir
 
@@ -67,10 +67,10 @@ async function test (argv,o) {
 }
 
 async function fetch (argv,o) {
-  const patterns = regex4 (argv.join('|'))
+  const patterns = regex4 (argv.join('|')) || { test: ()=> true }
   const tests = regex4 (o.match) || { test: ()=> true }
   const skip = regex4 (o.skip) || { test: ()=> false }
-  const ignore = /^(\.|node_modules|_out)$/
+  const ignore = /^(\..*|node_modules|_out)$/
   const files = []
   const fs = require('node:fs'), path = require('node:path')
   const _read = fs.promises.readdir
