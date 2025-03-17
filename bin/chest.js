@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 /* eslint-disable no-console */
 
-
 const options = {
   'timeout':  { type:'string',  short:'t' },
   'verbose':  { type:'boolean', short:'v' },
@@ -68,8 +67,8 @@ async function test (argv,o) {
 
 async function fetch (argv,o) {
   const patterns = regex4 (argv.join('|')) || { test: ()=> true }
-  const tests = regex4 (o.match) || { test: ()=> true }
-  const skip = regex4 (o.skip) || { test: ()=> false }
+  const tests = regex4 (o.match || options.match.default) || { test: ()=> true }
+  const skip = regex4 (o.skip || options.skip.default) || { test: ()=> false }
   const ignore = /^(\..*|node_modules|_out)$/
   const files = []
   const fs = require('node:fs'), path = require('node:path')
@@ -102,3 +101,25 @@ if (!module.parent) {
   const { positionals, values } = require('node:util').parseArgs ({ options, allowPositionals: true })
   test (positionals, values) .catch (e => console.error(e), process.exitCode = 1)
 }
+
+else module.exports = Object.assign ( test, {
+  options: [
+    '--files',
+    '--match',
+    '--skip',
+    '--timeout',
+    '--workers',
+  ],
+  flags: [
+    '--verbose',
+    '--unmute',
+    '--silent',
+    '--quiet',
+    '--list',
+    '--recent',
+    '--passed',
+    '--failed',
+  ],
+  shortcuts: [ '-f', null, null, '-t', '-w', '-v', '-u', '-s', '-q', '-l' ],
+  help: USAGE
+})
