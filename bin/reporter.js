@@ -59,11 +59,7 @@ module.exports = function report_on (test,o) {
       console.log(RESET)
     })
 
-    test.on ('complete', x => {
-      (x.details.passed ? suites.passed : suites.failed) .push (x.file)
-    })
-
-    test.on ('complete', x => {
+    test.on ('complete', root, x => {
       (x.details.passed ? suites.passed : suites.failed) .push (x.file)
     })
 
