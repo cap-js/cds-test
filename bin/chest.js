@@ -14,8 +14,9 @@ const options = {
   'match':    { type:'string', default: '(.test.js|.spec.js)$' },
   'skip':     { type:'string', default: '^(gen,*.tmp)$' },
   'only':     { type:'string'},
-  'help':     { type:'boolean', short:'h' },
   'workers':  { type:'string', short:'w' },
+  'debug':    { type:'string' },
+  'help':     { type:'boolean', short:'h' },
 }
 
 const USAGE = `

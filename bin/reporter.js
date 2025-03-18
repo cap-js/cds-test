@@ -2,8 +2,8 @@ const { BRIGHT, BOLD, INVERT, GRAY, GREEN, RESET, LF='\n', DIMMED, YELLOW, RED }
 const PASS = '\x1b[38;5;244m'
 const FAIL = '\x1b[38;5;244m' // '\x1b[38;5;124m'
 const SKIP = RESET+DIMMED
+const { relative } = require('node:path'), cwd = process.cwd(), local = f => relative(cwd,f)
 const { inspect } = require('node:util')
-const { relative } = require('node:path'), cwd = process.cwd()
 /* eslint-disable no-console */
 
 module.exports = function report_on (test,o) {
@@ -44,9 +44,13 @@ module.exports = function report_on (test,o) {
       if (o.quiet) return
       let err = x.details.error.cause || x.details.error
       let msg = typeof err === 'string' ? err : inspect (err, { colors:true, depth:11 })
-      console.log(RESET)
-      console.log(msg
-        .replace(/\s+.*lib\/expect\.js:.*\)/g,'')
+      if (err.code === 'ERR_ASSERTION') msg = msg.replace(/\s+.*lib\/expect\.js:.*\)/g,'')
+      if (x.file && x.details.error.failureType === 'hookFailed') console.log (
+        RED, LF, _indent4(x), 'Error:', x.details.error.message,
+        'at ' + local(x.file)+':'+x.line+':'+x.column, RESET
+      )
+      console.log (msg
+        .replace(/\s+.*async Promise.all \(index \d+\)/g,'')
         .replace(/\s+.*\(node:.*/g,'')
         .replace(/^/gm, _indent4(x)+'  ')
       )
@@ -55,11 +59,15 @@ module.exports = function report_on (test,o) {
       console.log(RESET)
     })
 
-    test.on ('complete', root, x => {
+    test.on ('complete', x => {
       (x.details.passed ? suites.passed : suites.failed) .push (x.file)
     })
 
-    test.once ('fail', ()=> process.exitCode = 1)
+    test.on ('complete', x => {
+      (x.details.passed ? suites.passed : suites.failed) .push (x.file)
+    })
+
+    // test.once ('fail', ()=> process.exitCode = 1)
     process.on('exit', summary)
   }
 
@@ -71,8 +79,8 @@ module.exports = function report_on (test,o) {
   function silent() {
     console.log() // start with an initial blank line
     test.on ('complete', root, x => {
-      if (x.details.passed) console.log (GREEN,' ✔', RESET+PASS, relative(cwd,x.name))
-      else console.log (BRIGHT+RED,' X', RESET+RED, relative(cwd,x.name), RESET)
+      if (x.details.passed) console.log (GREEN,' ✔', RESET+PASS, local(x.name))
+      else console.log (BRIGHT+RED,' X', RESET+RED, local(x.name), RESET)
     })
   }
 
@@ -101,9 +109,9 @@ module.exports = function report_on (test,o) {
     // report passed tests on leaf level
     test.on ('pass', leaf, x => {
       if (_recent_nesting > x.nesting && leaf(x)) console.log()
-      x.skip ? console.log(_indent4(x), YELLOW, '○' + SKIP, relative (cwd,x.name), RESET) :
-      x.todo ? console.log(_indent4(x), YELLOW, '+' + SKIP, relative (cwd,x.name), RESET) :
-      /*pass*/ console.log(_indent4(x), GREEN,  '✔' + PASS, relative (cwd,x.name), RESET)
+      x.skip ? console.log(_indent4(x), YELLOW, '○' + SKIP, local(x.name), RESET) :
+      x.todo ? console.log(_indent4(x), YELLOW, '+' + SKIP, local(x.name), RESET) :
+      /*pass*/ console.log(_indent4(x), GREEN,  '✔' + PASS, local(x.name), RESET)
       _recent_nesting = _recent?.nesting
       _recent = null
     })
@@ -111,7 +119,7 @@ module.exports = function report_on (test,o) {
     // report failed tests on leaf level
     test.on ('fail', leaf, x => {
       if (_recent_nesting > x.nesting && leaf(x)) console.log()
-      console.log(_indent4(x), BOLD+RED, 'X' + RESET+FAIL, relative (cwd,x.name), RESET)
+      console.log(_indent4(x), BOLD+RED, 'X' + RESET+FAIL, local(x.name), RESET)
       _recent_nesting = _recent?.nesting
       _recent = null
     })
