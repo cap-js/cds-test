@@ -67,7 +67,7 @@ module.exports = function report_on (test,o) {
       (x.details.passed ? suites.passed : suites.failed) .push (x.file)
     })
 
-    // test.once ('fail', ()=> process.exitCode = 1)
+    test.once ('fail', ()=> process.exitCode = 1)
     process.on('exit', summary)
   }
 

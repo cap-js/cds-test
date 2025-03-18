@@ -100,7 +100,7 @@ function list (files) {
 
 if (!module.parent) {
   const { positionals, values } = require('node:util').parseArgs ({ options, allowPositionals: true })
-  test (positionals, values) .catch (e => console.error(e), process.exitCode = 1)
+  test (positionals, values) .catch (console.error)
 }
 
 else module.exports = Object.assign ( test, {
