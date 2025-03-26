@@ -1,4 +1,4 @@
-const cds_test = require('../../..')
+const cds_test = require('../../../lib/cds-test')
 const describe = global.describe ?? require('node:test').describe
 
 describe('Sample tests', () => {
