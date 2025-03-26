@@ -37,6 +37,7 @@ describe('cds_test', ()=>{
   })
 
   describe ('chai', ()=> {
+    if (test.chai.fake) return it.skip ('chai is faked')
 
     it('should export chai', ()=> {
       expect (test.chai).to.exist
