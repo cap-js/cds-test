@@ -26,6 +26,7 @@
     "node": ">=20"
   },
   "scripts": {
+    "check-types": "tsc",
     "test": "node --test \"test/**/*.test.js\"",
     "test:mocha": "npx -y mocha \"test/**/*.test.js\"",
     "test:jest": "npx -y jest \"test/.*\\.test\\.js\"",
@@ -42,8 +43,9 @@
   },
   "devDependencies": {
     "@cap-js/cds-test": "file://.",
-    "@cap-js/test-sample-app": "file://./test/app/",
+    "@cap-js/cds-types": "^0.9.0",
     "@cap-js/sqlite": "^1.5.0",
+    "@cap-js/test-sample-app": "file://./test/app/",
     "@sap/cds": "^8.8",
     "express": "^4.17.1"
   }
