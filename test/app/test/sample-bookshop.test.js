@@ -1,4 +1,4 @@
-const cds_test = require('@cap-js/cds-test')
+const cds_test = require('../../..')
 const describe = global.describe ?? require('node:test').describe
 
 describe('Sample tests', () => {
