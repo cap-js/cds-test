@@ -6,7 +6,6 @@
       "strictPropertyInitialization": true,
       "strictBindCallApply": true,
       "skipLibCheck": true,
-      "noEmit": true,
       "noImplicitThis": true,
       "noImplicitReturns": true,
       "alwaysStrict": true,
