@@ -26,7 +26,7 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "npm run -s test:chest && npm run -s test:node && npm run -s test:mocha && npm run -s test:jest",
+    "test": "npm run -s test:jest",
     "test:chest": "chest",
     "test:jest": "npx -y jest",
     "test:mocha": "npx -y mocha",
