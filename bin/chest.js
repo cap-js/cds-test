@@ -13,7 +13,7 @@ const options = {
   'failed':   { type:'boolean' },
   'match':    { type:'string' },
   'include':  { type:'string', short:'i', default: '(.test.js|.spec.js)$' },
-  'exclude':  { type:'string', short:'x', _default: '^(gen,*.tmp)$' },
+  'exclude':  { type:'string', short:'x', default: '^(gen,*.tmp)$' },
   'only':     { type:'string', short:'o', },
   'skip':     { type:'string', short:'n', },
   'workers':  { type:'string', short:'w' },
@@ -52,7 +52,6 @@ const recent = () => {try { return require(home+'/.cds-test-recent.json') } catc
 const os = require('os'), home = os.userInfo().homedir
 const path = require('node:path')
 const fs = require('node:fs')
-const { exists } = require('@sap/cds/lib/utils')
 
 async function test (argv,o) {
   if (o.help || argv == '?') return console.log (USAGE)
@@ -75,7 +74,8 @@ async function test (argv,o) {
 }
 
 async function fetch (argv,o) {
-  if (o.match) o.include = o.match; o.exclude ??= jest().exclude || '^(gen,*.tmp)$'
+  if (o.match) o.include = o.match
+  if (o.exclude === 'jest.config') o.exclude = jest().exclude
   const patterns = regex4 (argv.join('|')) || { test: ()=> true }
   const include = regex4 (o.include || options.include.default) || { test: ()=> true }
   const exclude = regex4 (o.exclude || options.exclude.default) || { test: ()=> false }
@@ -117,7 +117,7 @@ function jest() {
       return { exclude: stdout }
     }
   }
-  return {}
+  return console.warn ('No jest.config found, skipping testPathIgnorePatterns')
 }
 
 if (!module.parent) {
