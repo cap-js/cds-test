@@ -1,7 +1,5 @@
 /* eslint-disable no-console */
 const expect = require('../lib/expect')
-const describe = global.describe ?? require('node:test').describe
-const it = global.it ?? require('node:test').it
 
 describe (`supported chai features subset ...`, ()=>{
 
