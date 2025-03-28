@@ -111,9 +111,9 @@ function jest() {
   for (const ext of [ '.js', '.json', '.mjs', '.cjs' ]) {
     if (exists (config_js+ext)) {
       // IMPORTANT: We need to jun that in a separate process to avoid loading the cds.env in current process
-      const { stdout } = require('node:child_process').spawnSync (
-        'node',  [ '-e', `console.log(JSON.stringify(require('${config_js+ext}')))` ]
-      , { encoding: 'utf-8' })
+      const { stdout } = require('node:child_process') .spawnSync ('node', [
+        '-e', `console.log( JSON.stringify (require('${config_js+ext}') ))`
+      ], { encoding: 'utf-8' })
       return JSON.parse (stdout)
     }
   }
