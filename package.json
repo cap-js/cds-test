@@ -33,6 +33,7 @@
     "test:node": "node --test"
   },
   "dependencies": {
+    "autocannon": "^8.0.0",
     "axios": "^1",
     "chai": "^4.4.1",
     "chai-as-promised": "^7.1.1",
