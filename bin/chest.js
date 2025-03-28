@@ -75,7 +75,7 @@ async function test (argv,o) {
 
 async function fetch (argv,o) {
   if (o.match) o.include = o.match
-  if (o.exclude === 'jest.config') o.exclude = jest().exclude
+  if (o.exclude === 'jest.config') o.exclude = jest().testPathIgnorePatterns?.join('|') || o.exclude
   const patterns = regex4 (argv.join('|')) || { test: ()=> true }
   const include = regex4 (o.include || options.include.default) || { test: ()=> true }
   const exclude = regex4 (o.exclude || options.exclude.default) || { test: ()=> false }
@@ -112,9 +112,9 @@ function jest() {
     if (exists (config_js+ext)) {
       // IMPORTANT: We need to jun that in a separate process to avoid loading the cds.env in current process
       const { stdout } = require('node:child_process').spawnSync (
-        'node',  [ '-e', `console.log(require('${config_js+ext}').testPathIgnorePatterns?.join('|')||'')` ]
+        'node',  [ '-e', `console.log(JSON.stringify(require('${config_js+ext}')))` ]
       , { encoding: 'utf-8' })
-      return { exclude: stdout }
+      return JSON.parse (stdout)
     }
   }
   return console.warn ('No jest.config found, skipping testPathIgnorePatterns')
