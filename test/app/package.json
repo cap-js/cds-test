@@ -1,7 +1,7 @@
 {
   "name": "@cap-js/test-sample-app",
   "dependencies": {
-    "@sap/cds": "^8"
+    "@sap/cds": ">=8"
   },
   "devDependencies": {
     "@cap-js/test": "file:../..",
