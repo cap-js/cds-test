@@ -6,13 +6,19 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [0.3.0] - tbd
+## [0.3.0] - 2025-04-03
 
 ### Added
 
+- add `toBeNull` matcher to Jest expectations
+
 ### Changed
 
+- Many changes to the experimental test runner.
+
 ### Fixed
+
+- Prevent jest and mocha from giving random timeout errors if `cds.test.data.reset` is used.
 
 ## [0.2.0] - 2025-03-04
 
