@@ -7,7 +7,7 @@
     "CDS"
   ],
   "author": "SAP SE (https://www.sap.com)",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "Apache-2.0",
   "repository": {
     "url": "git+https://github.com/cap-js/cds-test.git"
   },
