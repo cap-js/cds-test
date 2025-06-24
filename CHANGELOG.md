@@ -6,13 +6,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [0.4.0] - tbd
+## [0.4.0] - 2025-06-24
 
 ### Added
 
-### Changed
-
-### Fixed
+- Support for `err.cause` in `Axios` errors
+- Experimental support for `fetch` instead of `Axios`
 
 ## [0.3.0] - 2025-04-03
 
