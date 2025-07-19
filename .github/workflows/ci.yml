@@ -29,14 +29,14 @@ jobs:
     - run: npm ci
 
     - name: Node
-      run: npm run test
+      run: npm run node-test
 
     - name: Jest
-      run: npm run test:jest
+      run: npm run jest
 
     - name: Mocha
-      run: npm run test:mocha
+      run: npm run mocha
 
     - name: Chest
       if: runner.os != 'Windows'
-      run: npm run test:chest
+      run: npm run chest
