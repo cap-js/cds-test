@@ -26,7 +26,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "chest",
+    "chest": "bin/chest.js",
+    "test": "npm run chest -s",
     "jest": "npx -y jest",
     "mocha": "npx -y mocha",
     "node-test": "node --test"
