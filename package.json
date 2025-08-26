@@ -35,7 +35,7 @@
   "dependencies": {
     "axios": "^1",
     "chai": "^4.4.1",
-    "chai-as-promised": "^7.1.1",
+    "chai-as-promised": "^8.0.2",
     "chai-subset": "^1.6.0"
   },
   "peerDependencies": {
