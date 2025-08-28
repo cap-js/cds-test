@@ -1,11 +1,11 @@
 {
   "name": "@cap-js/test-sample-app",
   "dependencies": {
-    "@sap/cds": "^8"
+    "@sap/cds": ">=8"
   },
   "devDependencies": {
     "@cap-js/test": "file:../..",
-    "@cap-js/sqlite": "^1.5.0"
+    "@cap-js/sqlite": "*"
   },
   "cds": {
     "requires": {

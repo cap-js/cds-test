@@ -1,15 +1,15 @@
 {
   "name": "@cap-js/cds-test",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "description": "Test Support for CAP Node.js",
   "keywords": [
     "CAP",
     "CDS"
   ],
   "author": "SAP SE (https://www.sap.com)",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "Apache-2.0",
   "repository": {
-    "url": "git+https://github.com/cap-js/cds-test"
+    "url": "git+https://github.com/cap-js/cds-test.git"
   },
   "homepage": "https://cap.cloud.sap/",
   "main": "lib/cds-test.js",
@@ -26,11 +26,11 @@
     "node": ">=20"
   },
   "scripts": {
-    "test": "npm run -s test:jest",
-    "test:chest": "chest test",
-    "test:jest": "npx -y jest",
-    "test:mocha": "npx -y mocha",
-    "test:node": "node --test"
+    "chest": "bin/chest.js",
+    "test": "npm run chest -s",
+    "jest": "npx -y jest",
+    "mocha": "npx -y mocha",
+    "node-test": "node --test"
   },
   "dependencies": {
     "autocannon": "^8.0.0",
@@ -43,8 +43,7 @@
     "@sap/cds": ">=8.8"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^1.5.0",
-    "@sap/cds": "^8.8",
+    "@cap-js/sqlite": "^1.5.0 || ^2",
     "express": "^4.17.1"
   }
 }
