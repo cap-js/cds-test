@@ -91,6 +91,27 @@ describe('cds_test', ()=>{
     })
   })
 
+  describe ('perf', ()=> {
+    it('should support perf', ()=> {
+      expect (test.perf).to.exist
+      const { perf } = test
+      expect (perf.get).to.exist
+      expect (perf.put).to.exist
+      expect (perf.post).to.exist
+      expect (perf.delete).to.exist
+      expect (perf.fn).to.exist
+    })
+
+    it('should support REST shortcuts', ()=> {
+      const { GET,PUT,POST,PATCH,DEL,FN} = test.perf
+      expect (GET).to.exist
+      expect (PUT).to.exist
+      expect (POST).to.exist
+      expect (PATCH).to.exist
+      expect (DEL).to.exist
+      expect (FN).to.exist
+    })
+  })
 
   describe ('logs', ()=> {
 
