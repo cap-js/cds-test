@@ -1,7 +1,8 @@
-const { BRIGHT, BOLD, INVERT, GRAY, GREEN, RESET, LF='\n', DIMMED, YELLOW, RED } = require('@sap/cds').utils.colors
+const { BRIGHT, BOLD, INVERT, GRAY, GREEN, RESET, LF='\n', DIMMED, YELLOW, RED } = require('./colors')
 const PASS = '\x1b[38;5;244m'
 const FAIL = '\x1b[38;5;244m' // '\x1b[38;5;124m'
 const SKIP = RESET+DIMMED
+const { relative } = require('node:path'), cwd = process.cwd(), local = f => relative(cwd,f)
 const { inspect } = require('node:util')
 /* eslint-disable no-console */
 
@@ -43,9 +44,13 @@ module.exports = function report_on (test,o) {
       if (o.quiet) return
       let err = x.details.error.cause || x.details.error
       let msg = typeof err === 'string' ? err : inspect (err, { colors:true, depth:11 })
-      console.log(RESET)
-      console.log(msg
-        .replace(/\s+.*lib\/expect\.js:.*\)/g,'')
+      if (err.code === 'ERR_ASSERTION') msg = msg.replace(/\s+.*lib\/expect\.js:.*\)/g,'')
+      if (x.file && x.details.error.failureType === 'hookFailed') console.log (
+        RED, LF, _indent4(x), 'Error:', x.details.error.message,
+        'at ' + local(x.file)+':'+x.line+':'+x.column, RESET
+      )
+      console.log (msg
+        .replace(/\s+.*async Promise.all \(index \d+\)/g,'')
         .replace(/\s+.*\(node:.*/g,'')
         .replace(/^/gm, _indent4(x)+'  ')
       )
@@ -70,8 +75,8 @@ module.exports = function report_on (test,o) {
   function silent() {
     console.log() // start with an initial blank line
     test.on ('complete', root, x => {
-      if (x.details.passed) console.log (GREEN,' ✔', RESET+PASS, x.name)
-      else console.log (BRIGHT+RED,' X', RESET+RED, x.name, RESET)
+      if (x.details.passed) console.log (GREEN,' ✔', RESET+PASS, local(x.name))
+      else console.log (BRIGHT+RED,' X', RESET+RED, local(x.name), RESET)
     })
   }
 
@@ -100,9 +105,9 @@ module.exports = function report_on (test,o) {
     // report passed tests on leaf level
     test.on ('pass', leaf, x => {
       if (_recent_nesting > x.nesting && leaf(x)) console.log()
-      x.skip ? console.log(_indent4(x), YELLOW, '○' + SKIP, x.name, RESET) :
-      x.todo ? console.log(_indent4(x), YELLOW, '+' + SKIP, x.name, RESET) :
-      /*pass*/ console.log(_indent4(x), GREEN,  '✔' + PASS, x.name, RESET)
+      x.skip ? console.log(_indent4(x), YELLOW, '○' + SKIP, local(x.name), RESET) :
+      x.todo ? console.log(_indent4(x), YELLOW, '+' + SKIP, local(x.name), RESET) :
+      /*pass*/ console.log(_indent4(x), GREEN,  '✔' + PASS, local(x.name), RESET)
       _recent_nesting = _recent?.nesting
       _recent = null
     })
@@ -110,7 +115,7 @@ module.exports = function report_on (test,o) {
     // report failed tests on leaf level
     test.on ('fail', leaf, x => {
       if (_recent_nesting > x.nesting && leaf(x)) console.log()
-      console.log(_indent4(x), BOLD+RED, 'X' + RESET+FAIL, x.name, RESET)
+      console.log(_indent4(x), BOLD+RED, 'X' + RESET+FAIL, local(x.name), RESET)
       _recent_nesting = _recent?.nesting
       _recent = null
     })

@@ -1,8 +1,7 @@
-const cds_test = require('@cap-js/cds-test')
-const describe = global.describe ?? require('node:test').describe
+const cds_test = require('../../../lib/cds-test')
 
 describe('Sample tests', () => {
-  const { GET, expect } = cds_test('@cap-js/test-sample-app')
+  const { GET, expect } = cds_test(__dirname+'/..')
 
   it('serves Books', async () => {
     const { data } = await GET`/odata/v4/catalog/Books`

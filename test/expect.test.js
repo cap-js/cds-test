@@ -1,7 +1,6 @@
 /* eslint-disable no-console */
-const expect = require('@cap-js/cds-test/lib/expect')
-const describe = global.describe ?? require('node:test').describe
-const it = global.it ?? require('node:test').it
+if (typeof describe === 'undefined') ({ describe, it } = require('node:test'))
+const expect = require('../lib/expect')
 
 describe (`supported chai features subset ...`, ()=>{
 
