@@ -1,20 +1,52 @@
-declare function test(): void;
+import type { mock } from 'node:test'
+
 declare global {
     // when extending global, only var can be used
     var describe: {
-        each: function(): void;
-        skip: function(): void;
-    }
+        each: () => void;
+        skip: {
+            each: () => void;
+        }
+    } | (() => void);
+    var xdescribe: typeof describe['skip'];
     var it: {
-        each: function (): void,
-        skip: function (): void
+        each: () => void,
+        skip: () => void
     }
     var test: typeof it;
-    function before(): void;
-    function beforeAll(): void;
-    function after(): void;
-    function afterAll(): void;
-    function xtest(): void;
-    function xdescribe(): void;
+    var xtest: typeof it['skip'];
+    function before(message: string & Function?, method: Function): void;
+    function beforeEach(): void
+    function beforeAll(message: string & Function?, method: Function): void;
+    function after(message: string & Function?, method: Function): void;
+    function afterEach(): void;
+    function afterAll(message: string & Function?, method: Function): void;
+    function expect(): void;
+
+    var chai: {
+        expect: typeof expect,
+        should?: () => void,
+        fake?: boolean
+    }
+
+    var jest: {
+        fn: () => void;
+        spyOn: typeof mock.method;
+        restoreAllMocks: () => void;
+        resetAllMocks: () => void;
+        clearAllMocks: () => void;
+        clearAllTimers: () => void;
+        mock: (
+            module: string | unknown,
+            fn?: Function,
+            o?: { virtual?: boolean }
+        ) => void;
+        setTimeout: () => void;
+    }
+
+    // cds-dk types
+    var cds: {
+        repl: unknown
+    }
 }
 export {};
