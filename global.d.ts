@@ -4,14 +4,15 @@ import type each_type from './lib/fixtures/test-each.js'
 declare global {
     // when extending global, only var can be used
     var describe: {
-        each: typeof each_type;
+        each?: typeof each_type;
         skip: {
-            each: () => void;
+            (...xs:any[]): unknown
+            each?: () => void;
         }
     };
     var xdescribe: typeof describe['skip'];
     var it: {
-        each: typeof each_type,
+        each?: typeof each_type,
         skip: () => void
     }
     var test: typeof it;
