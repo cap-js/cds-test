@@ -1,9 +1,10 @@
-import type { mock } from 'node:test'
+import type { HookFn, mock } from 'node:test'
 import type each_type from './lib/fixtures/test-each.js'
 
 declare global {
     // when extending global, only var can be used
     var describe: {
+        (message: string, method: Function): void,
         each?: typeof each_type;
         skip: {
             (...xs:any[]): unknown
@@ -19,12 +20,12 @@ declare global {
     var xtest: typeof it['skip'];
     function before(method: Function): void;
     function before(message: string & Function?, method: Function): void;
-    function beforeEach(): void;
+    function beforeEach(method: Function): void;
     function beforeAll(method: Function): void;
     function beforeAll(message: string & Function?, method: Function): void;
     function after(method: Function): void;
     function after(message: string & Function?, method: Function): void;
-    function afterEach(): void;
+    function afterEach(method: HookFn): void;
     function afterAll(method: Function): void;
     function afterAll(message: string & Function?, method: Function): void;
     function expect(_:any): void;
@@ -32,7 +33,7 @@ declare global {
     var chai: {
         expect: typeof expect,
         should?: () => void,
-        fake?: boolean
+        fake?: boolean,
     }
 
     var jest: {
