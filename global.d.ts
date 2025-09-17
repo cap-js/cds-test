@@ -27,7 +27,7 @@ declare global {
     function afterEach(): void;
     function afterAll(method: Function): void;
     function afterAll(message: string & Function?, method: Function): void;
-    function expect(): void;
+    function expect(_:any): void;
 
     var chai: {
         expect: typeof expect,
