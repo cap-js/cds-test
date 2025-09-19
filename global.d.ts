@@ -2,6 +2,8 @@ import type { HookFn, mock } from 'node:test'
 import type each_type from './lib/fixtures/test-each.js'
 
 declare global {
+    var _cds_test_fixture: any;
+
     // when extending global, only var can be used
     var describe: {
         (message: string, method: Function): void,
