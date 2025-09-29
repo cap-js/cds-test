@@ -134,6 +134,7 @@ module.exports = function report_on (test,o) {
 
   /**
    * Adds handlers to debug test stream events.
+   * @param {string} events - comma-separated list of events to debug
    */
   function debug (events) {
     inspect.defaultOptions.depth = 11
