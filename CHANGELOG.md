@@ -6,9 +6,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [0.5.0] - tbd
+## [0.4.1] - 2025-11-10
 
-### Added
+### Fixed
+
+- `it.each()` only uses the first entry of nested arrays
+- Non-axios variant returns response `status` field also as `code`.
 
 ### Fixed
 
