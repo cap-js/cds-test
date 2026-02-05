@@ -79,7 +79,6 @@
 			<plugin>
 				<groupId>com.sap.cds</groupId>
 				<artifactId>cds-maven-plugin</artifactId>
-				<version>${cds.services.version}</version>
 				<executions>
 					<execution>
 						<id>cds.clean</id>
@@ -103,7 +102,7 @@
 						<configuration>
 							<commands>
 								<command>build --for java</command>
-								<command>deploy --to h2 --dry &gt; "${project.basedir}/src/main/resources/schema-h2.sql"</command>
+								<command>deploy --to h2 --with-mocks --dry --out "${project.basedir}/src/main/resources/schema-h2.sql"</command>
 							</commands>
 						</configuration>
 					</execution>
@@ -115,6 +114,10 @@
 						</goals>
 						<configuration>
 							<basePackage>cds.gen</basePackage>
+							<betterNames>true</betterNames>
+							<cqnServiceGetters>true</cqnServiceGetters>
+							<linkedInterfaces>true</linkedInterfaces>
+							<interfacesForAspects>true</interfacesForAspects>
 						</configuration>
 					</execution>
 				</executions>
