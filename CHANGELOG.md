@@ -6,13 +6,35 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [0.3.0] - tbd
+## [0.4.1] - 2025-11-10
+
+### Fixed
+
+- `it.each()` only uses the first entry of nested arrays
+- Non-axios variant returns response `status` field also as `code`.
+
+### Fixed
+
+## [0.4.0] - 2025-06-24
 
 ### Added
 
+- Support for `err.cause` in `Axios` errors
+- Experimental support for `fetch` instead of `Axios`
+
+## [0.3.0] - 2025-04-03
+
+### Added
+
+- add `toBeNull` matcher to Jest expectations
+
 ### Changed
 
+- Many changes to the experimental test runner.
+
 ### Fixed
+
+- Prevent jest and mocha from giving random timeout errors if `cds.test.data.reset` is used.
 
 ## [0.2.0] - 2025-03-04
 
