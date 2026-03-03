@@ -82,7 +82,7 @@ async function fetch (argv,o) {
   const ignore = /^(\..*|node_modules|_out)$/
   const files = []
   const _read = fs.promises.readdir
-  const _isdir = x => fs.statSync(x).isDirectory()
+  const _isdir = x => fs.lstatSync(x).isDirectory()
   await async function _visit (dir) {
     const entries = await _read (dir)
     return Promise.all (entries.map (each => {
