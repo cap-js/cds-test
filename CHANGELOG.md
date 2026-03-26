@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
-## [1.0.1] - 2026-...
+## [1.0.0] - 2026-...
 
 ### Fixed
 
@@ -19,8 +19,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 - The `chai` library has been removed as a dependency. This change was made to reduce the number of dependencies and to allow users to choose their preferred assertion library when using `cds.test`. Users can now use any assertion library they prefer without being tied to `chai`.
 
-- When using `expect` from `cds.test`, this now returns the a built-in `expect` implementation which covers the most common matchers with the common _chai_ API. 
-For compatibility, if chai is installed explicitly, the `expect` from `cds.test` will still return the `chai.expect` implementation. 
+- When using `expect` from `cds.test`, this now returns the a built-in `expect` implementation which covers the most common matchers with the common _chai_ API.  For compatibility, if `chai` is installed explicitly, the `expect` from `cds.test` will still return the `chai.expect` implementation.
 
 ### Removed
 
