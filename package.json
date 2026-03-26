@@ -33,7 +33,7 @@
     "node-test": "node --test"
   },
   "peerDependencies": {
-    "@sap/cds": ">=8.8"
+    "@sap/cds": ">=9.8"
   },
   "devDependencies": {
     "@cap-js/sqlite": "^1.5.0 || ^2"
