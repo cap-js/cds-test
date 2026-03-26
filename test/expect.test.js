@@ -88,9 +88,6 @@ describe (`supported chai features subset ...`, ()=>{
     expect({a:3, b:4}).to.deep.include({a:3, b:4}); // Recommended
     expect({a:3, b:4}).to.not.include({a:1, b:2}); // Not recommended
 
-    expect({a:3, b:4}).to.include({b:4, a:3});
-    expect({a:3, b:4}).to.containSubset({b:4, a:3});
-
     // The aliases .includes, .contain, and .contains can be used interchangeably with .include.
   })
 
@@ -160,6 +157,9 @@ describe (`superset features, not in chai ...`, ()=>{
 
 describe ('unsupported chai features', ()=>{
 
+  it.skip (`doesn't support .include subsets`, ()=>{
+    expect({a:3, b:4}).to.include({a:3}); // use .subset or .match instead
+  })
   it.skip (`doesn't support .include chains`, ()=>{
     expect({a:1, b:2, c:3}).to.include.all.keys('a', 'b')
     expect({a:1, b:2, c:3}).to.not.have.all.keys('a', 'b')

@@ -37,6 +37,7 @@ describe('cds_test', ()=>{
   })
 
   describe ('chai', ()=> {
+    if (test.chai.fake) return it.skip ('chai is faked')
 
     it('should export chai', ()=> {
       expect (test.chai).to.exist
@@ -52,21 +53,21 @@ describe('cds_test', ()=>{
 
     it('should support chai.except style', ()=>{
       const { expect } = test, foobar = {foo:'bar'}
+      expect(foobar).to.have.property('foo')
       expect(foobar.foo).to.equal('bar')
-      expect(foobar).to.have.property('foo','bar')
     })
 
     it('should use chai.assert style', ()=>{
       const { assert } = test, foobar = {foo:'bar'}
+      assert.property(foobar,'foo')
       assert.equal(foobar.foo,'bar')
-      // assert.property(foobar,'foo','bar')
     })
 
     it('should support chai.should style', ()=>{
-      const foobar = {foo:'bar'}
-      test.chai.should()
+      const { should } = test, foobar = {foo:'bar'}
+      foobar.should.have.property('foo')
       foobar.foo.should.equal('bar')
-      foobar.should.have.property('foo','bar')
+      should.equal(foobar.foo,'bar')
     })
 
   })

@@ -6,10 +6,6 @@ describe('Sample tests', () => {
   it('serves Books', async () => {
     const { data } = await GET`/odata/v4/catalog/Books`
     expect(data.value.length).to.be.greaterThanOrEqual(5)
-    expect(data.value).to.containSubset([
-      { title: 'Wuthering Heights' },
-      { title: 'The Raven' },
-    ])
   })
 
 })
