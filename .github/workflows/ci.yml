@@ -40,3 +40,8 @@ jobs:
     - name: Chest
       if: runner.os != 'Windows'
       run: npm run chest
+
+    - name: Naxios
+      run: npm run jest
+      env:
+        NAXIOS: true

@@ -88,6 +88,18 @@ describe('cds_test', ()=>{
       expect (PATCH).to.exist
       expect (DEL).to.exist
     })
+
+    it('should support axios validateStatus', async ()=> {
+      const { GET } = test
+      await GET('/foo').catch(err => { expect(err.response.status).to.equal(404) })
+      test.axios.defaults.validateStatus = (status) => status === 404
+      await GET('/foo')
+
+      for (let v of [false, undefined, null]) {
+        test.axios.defaults.validateStatus = v
+        await GET('/foo')
+      }
+    })
   })
 
 
