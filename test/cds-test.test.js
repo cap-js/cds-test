@@ -100,6 +100,13 @@ describe('cds_test', ()=>{
         await GET('/foo')
       }
     })
+
+    it('should support axios maxRedirects', async ()=> {
+      const { GET } = test
+      await GET('/redirect')
+      test.axios.defaults.maxRedirects = 0
+      await GET('/redirect').catch(err => { expect(err.response.status).to.equal(302) })
+    })
   })
 
 
