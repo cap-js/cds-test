@@ -89,9 +89,14 @@ describe (`supported chai features subset ...`, ()=>{
     expect({a:3, b:4}).to.not.include({a:1, b:2}); // Not recommended
 
     expect({a:3, b:4}).to.include({b:4, a:3});
-    expect({a:3, b:4}).to.containSubset({b:4, a:3});
 
     // The aliases .includes, .contain, and .contains can be used interchangeably with .include.
+  })
+
+  it ('supports .subset', ()=>{
+    expect({a:3, b:4}).to.containSubset({b:4, a:3});
+    expect({a:3, b:4}).to.not.containSubset({a:1, b:2});
+    expect({a:[1,2,3], b:[4,5,6]}).to.containSubset({a:[2,1], b:[4,6,5]});
   })
 
   it ('supports .within', ()=>{
