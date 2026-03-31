@@ -319,4 +319,16 @@ describe ('miscellaneous...', ()=>{
     return // Not supported:
   })
 
+  process.env.DEBUG ? it.skip('does not clean up stack traces when DEBUG is set') :
+  it('cleans up stack traces to show test file at top', () => {
+    try {
+      expect(1).to.equal(2) // this will fail
+    } catch (err) {
+      const stackLines = err.stack.split('\n')
+      expect(stackLines).to.not.match(/(TestContext|SuiteContext)\.<anonymous>/i)
+      expect(stackLines.filter(line => line.match(/[/\\]lib[/\\]expect\.js:/))).to.have.length(0)
+      expect(stackLines[1]).to.match(/expect\.test\.js/)
+    }
+  })
+
 })
