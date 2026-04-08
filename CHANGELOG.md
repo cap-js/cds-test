@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Changed
 
-- Usage of `axios` has been removed in favor of the Fetch API, which is available in Node.js 18 and later. This change allows for a more modern and native approach to making HTTP requests, eliminating the need for an external dependency.
+- Usage of `axios` has been removed in favor of the Fetch API, which is available in Node.js 18 and later. This change allows for a more modern and native approach to making HTTP requests, eliminating the need for an external dependency.  For compatibility, if it's is installed explicitly, the `axios` library will used.
 
 - The `chai` library has been removed as a dependency. This change was made to reduce the number of dependencies and to allow users to choose their preferred assertion library when using `cds.test`. Users can now use any assertion library they prefer without being tied to `chai`.
 

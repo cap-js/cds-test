@@ -41,7 +41,7 @@ jobs:
       if: runner.os != 'Windows'
       run: npm run chest
 
-    - name: Naxios
-      run: npm run jest
-      env:
-        NAXIOS: true
+    - name: Axios
+      run: |
+        npm add axios --no-save -D
+        npm run test
