@@ -107,6 +107,14 @@ describe('cds_test', ()=>{
       test.axios.defaults.maxRedirects = 0
       await GET('/redirect').catch(err => { expect(err.response.status).to.equal(302) })
     })
+
+    it('should support axios timeouts', async ()=> {
+      const { GET } = test
+      const { data } = await GET `/odata/v4/catalog/delay(ms='50')`
+      expect(data.value).to.match(/50/)
+      test.axios.defaults.timeout = 10
+      await expect(GET `/odata/v4/catalog/delay(ms='50')`).to.eventually.be.rejectedWith(/timeout/i)
+    })
   })
 
 
