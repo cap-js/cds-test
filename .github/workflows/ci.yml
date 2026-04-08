@@ -43,5 +43,10 @@ jobs:
 
     - name: Axios
       run: |
-        npm add axios --no-save -D
-        npm run test
+        npm i axios --no-save -D
+        npm run node-test
+
+    - name: Chai
+      run: |
+        npm i chai chai-as-promised --no-save -D
+        npm run node-test
