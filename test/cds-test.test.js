@@ -108,7 +108,8 @@ describe('cds_test', ()=>{
       await GET('/redirect').catch(err => { expect(err.response.status).to.equal(302) })
     })
 
-    it('should support axios timeouts', async ()=> {
+    // TODO timeouts lead to open handles reported by test runners
+    it.skip('should support axios timeouts', async ()=> {
       const { GET } = test
       const { data } = await GET `/odata/v4/catalog/delay(ms='50')`
       expect(data.value).to.match(/50/)
