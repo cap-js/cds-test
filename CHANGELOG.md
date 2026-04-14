@@ -8,27 +8,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [1.0.0] - 2026-...
 
-### Fixed
-
-- `cds.test` can now be used in combination with ESM modules without issues.
-- `cds.test` can now be used in combination with chai 6.
-
 ### Changed
 
 - Usage of `axios` has been removed in favor of the Fetch API, which is available in Node.js 18 and later. This change allows for a more modern and native approach to making HTTP requests, eliminating the need for an external dependency.  For compatibility, if it's is installed explicitly, the `axios` library will used.
 
-- The `chai` library has been removed as a dependency. This change was made to reduce the number of dependencies and to allow users to choose their preferred assertion library when using `cds.test`. Users can now use any assertion library they prefer without being tied to `chai`.
+- When running in Jest, the `expect` from `cds.test` now returns a built-in implementation which covers the most common matchers with the common _chai_ API.  In other runners, the `expect` from `cds.test` returns the `chai.expect` implementation as before.
 
-- When using `expect` from `cds.test`, this now returns the a built-in `expect` implementation which covers the most common matchers with the common _chai_ API.  For compatibility, if `chai` is installed explicitly, the `expect` from `cds.test` will still return the `chai.expect` implementation.
+- Assertion stack traces no longer contain frames of cds-test's own implementation.
 
 ### Removed
 
 - Dependencies to `axios` -> install it yourself if you want to use `axios`.
-- Dependencies to `chai` -> install it yourself if you want to use `chai`.
 
 ### Added
 
-- Assertion stack traces no longer contain frames of cds-test's own implementation.
+- Support for the [Vitest](https://vitest.dev/) test runner.
+
+### Fixed
+
+- `cds.test` can now be used in combination with ESM modules without issues.
+- `cds.test` can now be used in combination with `chai` 6 and `chai-as-promised` 8.
 
 ## [0.4.1] - 2025-11-10
 
