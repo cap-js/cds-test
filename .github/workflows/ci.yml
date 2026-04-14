@@ -34,6 +34,9 @@ jobs:
     - name: Jest
       run: npm run jest
 
+    - name: Vitest
+      run: npm run vitest -- --watch false
+
     - name: Mocha
       run: npm run mocha
 
@@ -41,12 +44,8 @@ jobs:
       if: runner.os != 'Windows'
       run: npm run chest
 
-    - name: Axios
+    - name: Axios installed
       run: |
-        npm i axios --no-save -D
+        npm i axios -D
         npm run node-test
-
-    - name: Chai
-      run: |
-        npm i chai chai-as-promised --no-save -D
-        npm run node-test
+        git checkout package.json
