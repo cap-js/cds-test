@@ -23,7 +23,7 @@
     "index.js"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "chest": "./bin/chest.js",
