@@ -6,6 +6,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.0] - 2026-...
+
+### Added
+
+- Assertion stack traces no longer contain frames of cds-test's own implementation.
+
 ## [0.4.1] - 2025-11-10
 
 ### Fixed
