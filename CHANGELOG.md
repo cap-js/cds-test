@@ -26,6 +26,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 - Dependencies to `axios` -> install it yourself if you want to use `axios`.
 - Dependencies to `chai` -> install it yourself if you want to use `chai`.
 
+### Added
+
+- Assertion stack traces no longer contain frames of cds-test's own implementation.
 
 ## [0.4.1] - 2025-11-10
 
