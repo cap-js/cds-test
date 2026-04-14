@@ -26,16 +26,19 @@
     "node": ">=20"
   },
   "scripts": {
-    "chest": "bin/chest.js",
-    "test": "npm run chest -s",
-    "jest": "npx -y jest",
-    "mocha": "npx -y mocha",
+    "chest": "chest",
+    "test": "chest",
+    "jest": "npx jest --silent",
+    "mocha": "npx mocha --parallel",
+    "vitest": "npx vitest --globals --silent",
     "node-test": "node --test"
   },
   "peerDependencies": {
-    "@sap/cds": ">=9.8"
+    "@sap/cds": ">=9.8",
+    "chai-as-promised": "^8",
+    "chai": "^6"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^1.5.0 || ^2"
+    "@cap-js/sqlite": "^2"
   }
 }
