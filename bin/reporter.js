@@ -21,7 +21,7 @@ module.exports = function report_on (test,o) {
 
   // add handlers according to options
   if (o.debug ??= process.env.debug) return debug(o.debug) // eslint-disable-line no-cond-assign
-  if (o.verbose ??= files.length === 1 && !o.silent) verbose(); else silent()
+  if (o.verbose ??= files.length === 1 && !o.silent) verbose(); else silent() // eslint-disable-line no-cond-assign
   if (o.unmute) unmute()
   common()
 

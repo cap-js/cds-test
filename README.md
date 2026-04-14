@@ -19,9 +19,9 @@ npm add -D @cap-js/cds-test
 Add a simple test file `test/bookshop.test.js ` with this content:
 ```js
 const cds = require('@sap/cds')
+const { GET, expect } = cds.test (__dirname+'/..')
 
 describe('Sample tests', () => {
-  const { GET, expect } = cds.test (__dirname+'/..')
 
   it('serves Books', async () => {
     const { data } = await GET `/odata/v4/catalog/Books`
@@ -30,12 +30,17 @@ describe('Sample tests', () => {
 })
 ```
 
-Run it with Jest, for example:
+Run it with Vitest, for example:
+```sh
+npx vitest
+```
+
+Or with Jest:
 ```sh
 npx jest
 ```
 
-`node --test` and `mocha` runners are supported, too, though with less coverage in real-life projects.
+`node --test`, and `mocha` runners are supported, too, though with less coverage in real-life projects.
 
 ## Documentation
 
@@ -55,4 +60,4 @@ We as members, contributors, and leaders pledge to make participation in our com
 
 ## Licensing
 
-Copyright 2024-2025 SAP SE or an SAP affiliate company and cds-test contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/cap-js/cds-test).
+Copyright 2024-2026 SAP SE or an SAP affiliate company and cds-test contributors. Please see our [LICENSE](LICENSE) for copyright and license information. Detailed information including third-party components and their licensing/copyright information is available [via the REUSE tool](https://api.reuse.software/info/github.com/cap-js/cds-test).

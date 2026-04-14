@@ -14,14 +14,14 @@ jobs:
   test:
     strategy:
       matrix:
-        node-version: [22]  # see https://nodejs.org/en/about/releases/
+        node-version: [24, 22]  # see https://nodejs.org/en/about/releases/
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'  # only if package-lock is present
@@ -34,6 +34,9 @@ jobs:
     - name: Jest
       run: npm run jest
 
+    - name: Vitest
+      run: npm run vitest -- --watch false
+
     - name: Mocha
       run: npm run mocha
 
@@ -41,7 +44,8 @@ jobs:
       if: runner.os != 'Windows'
       run: npm run chest
 
-    - name: Naxios
-      run: npm run jest
-      env:
-        NAXIOS: true
+    - name: Axios installed
+      run: |
+        npm i axios -D
+        npm run node-test
+        git checkout package.json

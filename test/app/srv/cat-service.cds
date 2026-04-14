@@ -13,4 +13,6 @@ service CatalogService {
   // @requires: 'authenticated-user'
   action submitOrder ( book: Books:ID, amount: Integer ) returns { stock: Integer };
   event OrderedBook : { book: Books:ID; amount: Integer; buyer: String };
+
+  function delay(ms: Integer) returns String;
 }

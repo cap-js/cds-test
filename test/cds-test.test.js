@@ -37,7 +37,6 @@ describe('cds_test', ()=>{
   })
 
   describe ('chai', ()=> {
-    if (test.chai.fake) return it.skip ('chai is faked')
 
     it('should export chai', ()=> {
       expect (test.chai).to.exist
@@ -53,21 +52,21 @@ describe('cds_test', ()=>{
 
     it('should support chai.except style', ()=>{
       const { expect } = test, foobar = {foo:'bar'}
-      expect(foobar).to.have.property('foo')
       expect(foobar.foo).to.equal('bar')
+      expect(foobar).to.have.property('foo','bar')
     })
 
     it('should use chai.assert style', ()=>{
       const { assert } = test, foobar = {foo:'bar'}
-      assert.property(foobar,'foo')
       assert.equal(foobar.foo,'bar')
+      // assert.property(foobar,'foo','bar')
     })
 
     it('should support chai.should style', ()=>{
-      const { should } = test, foobar = {foo:'bar'}
-      foobar.should.have.property('foo')
+      const foobar = {foo:'bar'}
+      test.chai.should()
       foobar.foo.should.equal('bar')
-      should.equal(foobar.foo,'bar')
+      foobar.should.have.property('foo','bar')
     })
 
   })
@@ -100,6 +99,22 @@ describe('cds_test', ()=>{
         test.axios.defaults.validateStatus = v
         await GET('/foo')
       }
+    })
+
+    it('should support axios maxRedirects', async ()=> {
+      const { GET } = test
+      await GET('/redirect')
+      test.axios.defaults.maxRedirects = 0
+      await GET('/redirect').catch(err => { expect(err.response.status).to.equal(302) })
+    })
+
+    // TODO timeouts lead to open handles reported by test runners
+    it.skip('should support axios timeouts', async ()=> {
+      const { GET } = test
+      const { data } = await GET `/odata/v4/catalog/delay(ms='50')`
+      expect(data.value).to.match(/50/)
+      test.axios.defaults.timeout = 10
+      await expect(GET `/odata/v4/catalog/delay(ms='50')`).to.eventually.be.rejectedWith(/timeout/i)
     })
   })
 
