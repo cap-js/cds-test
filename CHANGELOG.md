@@ -23,6 +23,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Added
 
 - Support for the [Vitest](https://vitest.dev/) test runner.
+- Property `cds.test.defaults` as a shortcut for `cds.test.axios.defaults`, which is deprecated now.
+- Property `cds.test.defaults.path` to set a common path prefix for subsequent requests.
 
 ### Fixed
 
