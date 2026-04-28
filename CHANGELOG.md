@@ -6,6 +6,31 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.0] - 2026-04-23
+
+### Changed
+
+- Usage of `axios` has been removed in favor of the Fetch API, which is available in Node.js 18 and later. This change allows for a more modern and native approach to making HTTP requests, eliminating the need for an external dependency.  For compatibility, if it's is installed explicitly, the `axios` library will used.
+
+- When running in Jest, the `expect` from `cds.test` now returns a built-in implementation which covers the most common matchers with the common _chai_ API.  In other runners, the `expect` from `cds.test` returns the `chai.expect` implementation as before.
+
+- Assertion stack traces no longer contain frames of cds-test's own implementation.
+
+### Removed
+
+- Dependencies to `axios` -> install it yourself if you want to use `axios`.
+
+### Added
+
+- Support for the [Vitest](https://vitest.dev/) test runner.
+- Property `cds.test.defaults` as a shortcut for `cds.test.axios.defaults`, which is deprecated now.
+- Property `cds.test.defaults.path` to set a common path prefix for subsequent requests.
+
+### Fixed
+
+- `cds.test` can now be used in combination with ESM modules without issues.
+- `cds.test` can now be used in combination with `chai` 6 and `chai-as-promised` 8.
+
 ## [0.4.1] - 2025-11-10
 
 ### Fixed

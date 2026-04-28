@@ -20,6 +20,11 @@ class CatalogService extends cds.ApplicationService { init(){
     if (each.stock > 111) each.title += ` -- 11% discount!`
   })
 
+  this.on('delay', req => {
+    const { ms } = req.data
+    return new Promise(resolve => setTimeout(() => resolve(`Delay of ${ms}ms reached`), ms))
+  })
+
   return super.init()
 }}
 

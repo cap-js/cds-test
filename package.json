@@ -1,6 +1,6 @@
 {
   "name": "@cap-js/cds-test",
-  "version": "0.4.1",
+  "version": "1.0.0",
   "description": "Test Support for CAP Node.js",
   "keywords": [
     "CAP",
@@ -23,25 +23,22 @@
     "index.js"
   ],
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
-    "chest": "bin/chest.js",
-    "test": "npm run chest -s",
-    "jest": "npx -y jest",
-    "mocha": "npx -y mocha",
+    "chest": "./bin/chest.js",
+    "test": "./bin/chest.js",
+    "jest": "npx jest --silent",
+    "mocha": "npx mocha --parallel",
+    "vitest": "npx vitest --globals --silent",
     "node-test": "node --test"
   },
-  "dependencies": {
-    "axios": "^1",
-    "chai": "^4.4.1",
-    "chai-as-promised": "^7.1.1",
-    "chai-subset": "^1.6.0"
-  },
   "peerDependencies": {
-    "@sap/cds": ">=8.8"
+    "@sap/cds": ">=9.8",
+    "chai-as-promised": "^8",
+    "chai": "^6"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^1.5.0 || ^2"
+    "@cap-js/sqlite": "^2"
   }
 }

@@ -88,7 +88,15 @@ describe (`supported chai features subset ...`, ()=>{
     expect({a:3, b:4}).to.deep.include({a:3, b:4}); // Recommended
     expect({a:3, b:4}).to.not.include({a:1, b:2}); // Not recommended
 
+    expect({a:3, b:4}).to.include({b:4, a:3});
+
     // The aliases .includes, .contain, and .contains can be used interchangeably with .include.
+  })
+
+  it ('supports .subset', ()=>{
+    expect({a:3, b:4}).to.containSubset({b:4, a:3});
+    expect({a:3, b:4}).to.not.containSubset({a:1, b:2});
+    expect({a:[1,2,3], b:[4,5,6]}).to.containSubset({a:[2,1], b:[4,6,5]});
   })
 
   it ('supports .within', ()=>{
@@ -157,9 +165,6 @@ describe (`superset features, not in chai ...`, ()=>{
 
 describe ('unsupported chai features', ()=>{
 
-  it.skip (`doesn't support .include subsets`, ()=>{
-    expect({a:3, b:4}).to.include({a:3}); // use .subset or .match instead
-  })
   it.skip (`doesn't support .include chains`, ()=>{
     expect({a:1, b:2, c:3}).to.include.all.keys('a', 'b')
     expect({a:1, b:2, c:3}).to.not.have.all.keys('a', 'b')
@@ -317,6 +322,18 @@ describe ('miscellaneous...', ()=>{
     // expect(11).to.match(expected)
 
     return // Not supported:
+  })
+
+  process.env.DEBUG ? it.skip('does not clean up stack traces when DEBUG is set') :
+  it('cleans up stack traces to show test file at top', () => {
+    try {
+      expect(1).to.equal(2) // this will fail
+    } catch (err) {
+      const stackLines = err.stack.split('\n')
+      expect(stackLines).to.not.match(/(TestContext|SuiteContext)\.<anonymous>/i)
+      expect(stackLines.filter(line => line.match(/[/\\]lib[/\\]expect\.js:/))).to.have.length(0)
+      expect(stackLines[1]).to.match(/expect\.test\.js/)
+    }
   })
 
 })

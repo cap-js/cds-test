@@ -21,7 +21,7 @@ module.exports = function report_on (test,o) {
 
   // add handlers according to options
   if (o.debug ??= process.env.debug) return debug(o.debug) // eslint-disable-line no-cond-assign
-  if (o.verbose ??= files.length === 1 && !o.silent) verbose(); else silent()
+  if (o.verbose ??= files.length === 1 && !o.silent) verbose(); else silent() // eslint-disable-line no-cond-assign
   if (o.unmute) unmute()
   common()
 
@@ -45,18 +45,12 @@ module.exports = function report_on (test,o) {
       if (o.quiet) return
       let err = x.details.error.cause || x.details.error
       let msg = typeof err === 'string' ? err : inspect (err, { colors:true, depth:11 })
-      if (err.code === 'ERR_ASSERTION') msg = msg
-        .replace(/\s+.*lib\/expect\.js:.*\)/g,'')
-        .replace(/TestContext\.<anonymous> /g,'')
-        .replace(/SuiteContext.\.<anonymous> /g,'')
       if (x.file && x.details.error.failureType === 'hookFailed') console.log (
         RED, LF, _indent4(x), 'Error:', x.details.error.message,
         'at ' + local(x.file)+':'+x.line+':'+x.column, RESET
       )
       console.log(RESET)
       console.log (msg
-        .replace(/SuiteContext.\.<anonymous> /g,'')
-        .replace(/TestContext\.<anonymous> /g,'')
         .replace(/\s+.*async Promise.all \(index \d+\)/g,'')
         .replace(/\s+.*\(node:.*/g,'')
         .replace(/^/gm, _indent4(x)+'  ')
