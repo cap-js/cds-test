@@ -29,8 +29,8 @@ jobs:
 
       - run: npm ci
 
-      - name: Install java-app dependencies
-        run: npm install --prefix test/java-app
+      - name: Install CDS CLI
+        run: npm install -g @sap/cds
 
       - name: Build Java app
         run: mvn -f test/java-app/pom.xml package -DskipTests
