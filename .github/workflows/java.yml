@@ -29,8 +29,11 @@ jobs:
 
       - run: npm ci
 
+      - name: Install java-app dependencies
+        run: npm install --prefix test/java-app
+
       - name: Build Java app
         run: mvn -f test/java-app/pom.xml package -DskipTests
 
       - name: Run Java integration test
-        run: node --test test/java-app/test/sample-java.it.js
+        run: node --test test/java-app/it/sample-java.it.js
