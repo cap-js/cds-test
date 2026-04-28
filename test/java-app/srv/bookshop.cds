@@ -7,5 +7,5 @@ entity Books {
 
 @path: 'catalog'
 service CatalogService {
-  @readonly entity Books as projection on bookshop.Books;
+  entity Books as projection on bookshop.Books;
 }
