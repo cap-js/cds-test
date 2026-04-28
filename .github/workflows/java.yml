@@ -36,4 +36,4 @@ jobs:
         run: mvn -f test/java-app/pom.xml package -DskipTests
 
       - name: Run Java integration test
-        run: node --test test/java-app/it/sample-java.it.js
+        run: CDS_ENV=java node --test test/java-app/it/sample-java.it.js
