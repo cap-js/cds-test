@@ -3,33 +3,39 @@ const cds_test = require("../../../lib/cds-test");
 describe("Java integration", () => {
   if (!/java/.test(process.env.CDS_ENV)) return test.skip();
 
-  const { GET, POST, expect, cds, test } = cds_test(__dirname + "/..");
+  const {
+    GET,
+    POST,
+    expect,
+    cds,
+    test: { data },
+  } = cds_test(__dirname + "/..");
 
   it("serves Books via Java OData endpoint", async () => {
-    const { data } = await GET`/odata/v4/catalog/Books`;
-    expect(data.value).to.exist;
-    expect(data.value.length).to.be.greaterThanOrEqual(1);
+    const res = await GET`/odata/v4/catalog/Books`;
+    expect(res.data.value).to.exist;
+    expect(res.data.value.length).to.be.greaterThanOrEqual(1);
   });
 
   it("accesses database via HCQL proxy", async () => {
     const { Books } = cds.entities("bookshop");
-    const data = await cds.ql`SELECT ID FROM ${Books}`;
-    expect(data.length).to.be.greaterThanOrEqual(1);
+    const res = await SELECT.from(Books).columns(["ID"]);
+    expect(res.length).to.be.greaterThanOrEqual(1);
   });
 
   describe("data reset", () => {
     it("restores exact seed data after mutation", async () => {
       await POST(`/odata/v4/catalog/Books`, { ID: 9999, title: "Test" });
-      const { data: dirty } = await GET`/odata/v4/catalog/Books`;
-      expect(dirty.value.find((b) => b.ID === 9999)).to.exist;
+      const beforeReset = await GET`/odata/v4/catalog/Books`;
+      expect(beforeReset.data.value.find((b) => b.ID === 9999)).to.exist;
 
-      await test.data.reset();
+      await data.reset();
 
-      const { data } = await GET`/odata/v4/catalog/Books`;
-      expect(data.value.map((b) => b.ID).sort((a, b) => a - b)).to.deep.equal([
-        1, 2, 3,
-      ]);
-      expect(data.value.find((b) => b.ID === 9999)).to.not.exist;
+      const afterReset = await GET(
+        "/odata/v4/catalog/Books?select=ID&$orderby=ID",
+      );
+      expect(afterReset.data.value.map((d) => d.ID)).to.deep.equal([1, 2, 3]);
+      expect(afterReset.data.value.find((b) => b.ID === 9999)).not.to.exist;
     });
   });
 });
