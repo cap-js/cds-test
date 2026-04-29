@@ -1,8 +1,7 @@
-const cds_test = require("../../../lib/cds-test");
-
 describe("Java integration", () => {
-  if (!/java/.test(process.env.CDS_ENV)) return test.skip("skipped", () => {});
+  if (!/java/.test(process.env.CDS_ENV)) return it.skip("skipped", () => {});
 
+  const cds_test = require("../../../lib/cds-test");
   const {
     GET,
     POST,

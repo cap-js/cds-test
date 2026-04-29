@@ -29,7 +29,7 @@
     "chest": "./bin/chest.js",
     "test": "./bin/chest.js",
     "jest": "npx jest --silent",
-    "mocha": "npx mocha --parallel 'test/**/*.{test,spec}.{js,cjs,mjs}'",
+    "mocha": "npx mocha --parallel",
     "vitest": "npx vitest --globals --silent",
     "node-test": "node --test"
   },

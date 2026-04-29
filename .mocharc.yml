@@ -1,0 +1,1 @@
+spec: 'test/**/*.{test,spec}.{js,cjs,mjs}'
