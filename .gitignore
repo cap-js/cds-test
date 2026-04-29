@@ -11,3 +11,10 @@ gen/
 *.sqlite-shm
 *.sqlite-wal
 .vscode/
+
+**/gen/
+**/edmx/
+**/target/
+.flattened-pom.xml
+schema*.sql
+*.log*

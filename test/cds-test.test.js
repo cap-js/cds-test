@@ -4,10 +4,10 @@ const Books = 'sap.capire.bookshop.Books'
 
 describe('cds_test', ()=>{
 
-  const { expect, test } = cds_test().in(__dirname,'app')
+  const { expect, test } = cds_test().in(__dirname,'node-app')
 
   it('should have started the server correctly', () => {
-    const bookshop = cds.utils.path.resolve(__dirname,'app')
+    const bookshop = cds.utils.path.resolve(__dirname,'node-app')
     expect (cds.env._home) .to.equal (bookshop)
     expect (cds.root) .to.equal (bookshop)
     expect (test.server).to.exist

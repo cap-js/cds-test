@@ -29,7 +29,7 @@ jobs:
     - run: npm ci
 
     - name: Node Test Runner
-      run: npm run node-test
+      run: node --test 'test/*.test.js' 'test/node-app/**/*.test.js'
 
     - name: Jest
       run: npm run jest
@@ -38,7 +38,7 @@ jobs:
       run: npm run vitest -- --watch false
 
     - name: Mocha
-      run: npm run mocha
+      run: npx mocha --parallel 'test/*.test.js' 'test/node-app/**/*.test.js'
 
     - name: Chest
       if: runner.os != 'Windows'
