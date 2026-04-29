@@ -29,11 +29,8 @@ jobs:
 
       - run: npm ci
 
-      - name: Install CDS CLI
-        run: npm install -g @sap/cds
-
       - name: Build Java app
         run: mvn -f test/java-app/pom.xml package -DskipTests
 
       - name: Run Java integration test
-        run: CDS_ENV=java node --test test/java-app/it/sample-java.it.js
+        run: CDS_ENV=java node --test test/java-app/it/sample-java.test.js
