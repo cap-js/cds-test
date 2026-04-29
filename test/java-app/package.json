@@ -1,6 +1,8 @@
 {
   "name": "@cap-js/test-java-app",
   "devDependencies": {
-    "@sap/cds-dk": "^9"
+    "@cap-js/cds-test": "^1.0.0",
+    "@sap/cds-dk": "^9",
+    "chai": "^6.2.2"
   }
 }

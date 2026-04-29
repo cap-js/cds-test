@@ -38,7 +38,7 @@ jobs:
       run: npm run vitest -- --watch false
 
     - name: Mocha
-      run: npm run mocha
+      run: npm run mocha -- --exclude test/java-app/**/*
 
     - name: Chest
       if: runner.os != 'Windows'
