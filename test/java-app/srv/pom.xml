@@ -87,9 +87,9 @@
 						</goals>
 					</execution>
 					<execution>
-						<id>cds.install-cds</id>
+						<id>cds.install-cdsdk</id>
 						<goals>
-							<goal>install-cds</goal>
+							<goal>install-cdsdk</goal>
 						</goals>
 					</execution>
 					<execution>
