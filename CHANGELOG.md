@@ -6,6 +6,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.1] - 2026-04-29
+
+### Fixed
+
+- `cds-test` no longer fails to find test files if it encounters a symlinked directory.
+
 ## [1.0.0] - 2026-04-23
 
 ### Changed
