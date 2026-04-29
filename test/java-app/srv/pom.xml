@@ -81,13 +81,7 @@
 				<artifactId>cds-maven-plugin</artifactId>
 				<executions>
 					<execution>
-						<id>cds.install-node</id>
-						<goals>
-							<goal>install-node</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>cds.install-cdsdk</id>
+						<id>cds.npm-ci</id>
 						<goals>
 							<goal>npm</goal>
 						</goals>
