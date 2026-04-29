@@ -89,8 +89,11 @@
 					<execution>
 						<id>cds.install-cdsdk</id>
 						<goals>
-							<goal>install-cdsdk</goal>
+							<goal>npm</goal>
 						</goals>
+						<configuration>
+							<arguments>ci</arguments>
+						</configuration>
 					</execution>
 					<execution>
 						<id>cds.clean</id>
