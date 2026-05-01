@@ -1,11 +1,9 @@
-namespace bookshop;
-
-entity Books {
-  key ID    : Integer;
-      title : String;
-}
+using {bookshop} from '../db/schema';
 
 @path: 'catalog'
 service CatalogService {
-  entity Books as projection on bookshop.Books;
+  entity Authors as projection on bookshop.Authors;
+
+  @odata.draft.enabled
+  entity Books   as projection on bookshop.Books;
 }

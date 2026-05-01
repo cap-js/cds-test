@@ -1,4 +1,4 @@
-ID,title
-1,Wuthering Heights
-2,The Raven
-3,Eleonora
+ID,author_ID,title
+1,10,Wuthering Heights
+2,11,The Raven
+3,11,Eleonora
