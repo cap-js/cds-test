@@ -63,7 +63,7 @@ async function test (argv,o) {
   if (o.skip) process.env._chest_skip = o.skip
   if (o.files.length > 1) console.log (DIMMED,`\nRunning ${o.files.length} test suites...`, RESET)
   const test = require('node:test').run({ ...o,
-    execArgv: [ ...process.execArgv, '--require', require.resolve('../lib/fixtures/node-test.js') ],
+    execArgv: [ '--require', require.resolve('../lib/fixtures/node-test.js') ],
     timeout: +o.timeout || undefined,
     concurrency: +o.workers || true,
     forceExit: true,
