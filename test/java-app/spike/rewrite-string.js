@@ -1,5 +1,7 @@
 'use strict'
 
+// THIS IS THE PREFERRED SPIKE RESULT
+
 // Rewrite approach A: stringify → string replace → parse.
 // Exploits the fact that entity names in CQN JSON always appear as
 //   "ref":["some.Entity"   (no spaces — JSON.stringify is deterministic)
