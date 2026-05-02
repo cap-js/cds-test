@@ -48,11 +48,17 @@ async function main() {
   console.log(`Model loaded. bookshop.Books elements: ${Object.keys(Books.elements).join(', ')}\n`)
 
   const cases = [
-    ['SELECT from bookshop.Books',              SELECT.from(Books)],
-    ['SELECT from bookshop.Books WHERE ID=1',   SELECT.from(Books).where({ ID: 1 })],
-    ['SELECT from bookshop.Books, author{*}',   SELECT.from(Books).columns(b => { b`*`; b.author`*` })],
-    ['SELECT from bookshop.Authors',            SELECT.from(Authors)],
-    ['DELETE from bookshop.Books',              DELETE.from(Books)],
+    ['SELECT from bookshop.Books',                                  SELECT.from(Books)],
+    ['SELECT from bookshop.Books WHERE ID=1',                       SELECT.from(Books).where({ ID: 1 })],
+    ['SELECT from bookshop.Books, author{*}',                       SELECT.from(Books).columns(b => { b`*`; b.author`*` })],
+    ['SELECT from bookshop.Authors',                                SELECT.from(Authors)],
+    // Association navigation in WHERE — the core open question:
+    // Does Java resolve { ref: ['author', 'name'] } through hcqlProxy.Books.author?
+    ['SELECT from bookshop.Books WHERE author.name = Emily Brontë', SELECT.from(Books).where`author.name = ${'Emily Brontë'}`],
+    // Association navigation in columns (path expression, no expand):
+    ['SELECT ID, title, author.name from bookshop.Books',           SELECT.from(Books).columns('ID', 'title', 'author.name')],
+    // DELETE last — clears table, so must run after all SELECTs:
+    ['DELETE from bookshop.Books',                                  DELETE.from(Books)],
   ]
 
   for (const [label, cqn] of cases) {
