@@ -1,0 +1,97 @@
+{
+  "$version": "2.0",
+  "definitions": {
+    "hcqlProxy": {
+      "kind": "service",
+      "@path": "hcqlProxy",
+      "@protocol": ["hcql"],
+      "@requires": "any"
+    },
+    "hcqlProxy.Authors": {
+      "kind": "entity",
+      "@requires": "any",
+      "@cds.persistence.exists": true,
+      "@cds.persistence.name": "BOOKSHOP_AUTHORS",
+      "elements": {
+        "ID": { "key": true, "type": "cds.Integer" },
+        "name": { "type": "cds.String", "length": 255 }
+      }
+    },
+    "hcqlProxy.Books": {
+      "kind": "entity",
+      "@requires": "any",
+      "@cds.persistence.exists": true,
+      "@cds.persistence.name": "BOOKSHOP_BOOKS",
+      "elements": {
+        "ID": { "key": true, "type": "cds.Integer" },
+        "title": { "type": "cds.String", "length": 255 },
+        "author_ID": { "type": "cds.Integer" }
+      }
+    },
+    "hcqlProxy.BookTexts": {
+      "kind": "entity",
+      "@requires": "any",
+      "@cds.persistence.exists": true,
+      "@cds.persistence.name": "BOOKSHOP_BOOKS_TEXTS",
+      "elements": {
+        "locale": { "key": true, "type": "cds.String", "length": 14 },
+        "ID": { "key": true, "type": "cds.Integer" },
+        "title": { "type": "cds.String", "length": 255 }
+      }
+    },
+    "hcqlProxy.Messages": {
+      "kind": "entity",
+      "@requires": "any",
+      "@cds.persistence.exists": true,
+      "@cds.persistence.name": "CDS_OUTBOX_MESSAGES",
+      "elements": {
+        "ID": { "key": true, "type": "cds.UUID" },
+        "timestamp": { "type": "cds.Timestamp" },
+        "target": { "type": "cds.String", "length": 255 },
+        "msg": { "type": "cds.LargeString" },
+        "attempts": { "type": "cds.Integer" },
+        "PARTITION": { "type": "cds.Integer" },
+        "lastError": { "type": "cds.LargeString" },
+        "lastAttemptTimestamp": { "type": "cds.Timestamp" },
+        "status": { "type": "cds.String", "length": 23 },
+        "task": { "type": "cds.String", "length": 255 },
+        "appid": { "type": "cds.String", "length": 255 }
+      }
+    },
+    "hcqlProxy.DraftAdminData": {
+      "kind": "entity",
+      "@requires": "any",
+      "@cds.persistence.exists": true,
+      "@cds.persistence.name": "DRAFT_DRAFTADMINISTRATIVEDATA",
+      "elements": {
+        "DraftUUID": { "key": true, "type": "cds.UUID" },
+        "CreationDateTime": { "type": "cds.Timestamp" },
+        "CreatedByUser": { "type": "cds.String", "length": 256 },
+        "CreatedByUserDescription": { "type": "cds.String", "length": 256 },
+        "DraftIsCreatedByMe": { "type": "cds.Boolean" },
+        "LastChangeDateTime": { "type": "cds.Timestamp" },
+        "LastChangedByUser": { "type": "cds.String", "length": 256 },
+        "LastChangedByUserDescription": { "type": "cds.String", "length": 256 },
+        "InProcessByUser": { "type": "cds.String", "length": 256 },
+        "InProcessByUserDescription": { "type": "cds.String", "length": 256 },
+        "DraftIsProcessedByMe": { "type": "cds.Boolean" },
+        "DraftMessages": { "type": "cds.LargeString" }
+      }
+    },
+    "hcqlProxy.BooksDrafts": {
+      "kind": "entity",
+      "@requires": "any",
+      "@cds.persistence.exists": true,
+      "@cds.persistence.name": "CATALOGSERVICE_BOOKS_DRAFTS",
+      "elements": {
+        "ID": { "key": true, "type": "cds.Integer" },
+        "title": { "type": "cds.String", "length": 255 },
+        "author_ID": { "type": "cds.Integer" },
+        "IsActiveEntity": { "type": "cds.Boolean" },
+        "HasActiveEntity": { "type": "cds.Boolean" },
+        "HasDraftEntity": { "type": "cds.Boolean" },
+        "DraftAdministrativeData_DraftUUID": { "type": "cds.UUID" }
+      }
+    }
+  }
+}
