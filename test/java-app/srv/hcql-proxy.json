@@ -25,7 +25,12 @@
       "elements": {
         "ID": { "key": true, "type": "cds.Integer" },
         "title": { "type": "cds.String", "length": 255 },
-        "author_ID": { "type": "cds.Integer" }
+        "author_ID": { "type": "cds.Integer" },
+        "author": {
+          "type": "cds.Association",
+          "target": "bookshop.Authors",
+          "on": [{ "ref": ["author", "ID"] }, "=", { "ref": ["author_ID"] }]
+        }
       }
     },
     "hcqlProxy.BookTexts": {
