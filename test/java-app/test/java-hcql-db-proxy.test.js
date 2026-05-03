@@ -172,21 +172,18 @@ describe("Java HCQL db proxy", () => {
 
   describe("Books.drafts", () => {
     // TODO: Review AI Test
-    it("dbProxy.BooksDrafts entity exists in model", () => {
-      // TODO: This should also be available from cds.entities('bookshop')
-      // TODO: > If it is not, we should consider an override similar to our cds.connect.to('db') hack ... 
-      // TODO: > I am pretty sure it should either just work, or should be easy to spoof the model the test-runtime sees.
-      const BooksDrafts = cds.model.definitions['dbProxy.BooksDrafts']
+    it("Books.drafts accessible on bookshop.Books entity", () => {
+      const { Books } = cds.entities('bookshop')
 
-      expect(BooksDrafts).to.exist
+      expect(Books.drafts).to.exist
     })
 
     // TODO: Review AI Test
     // Note: requires Java's HCQL db service to route draft entity queries
     it("can SELECT from Books.drafts via db service (empty when no drafts exist)", async () => {
-      const BooksDrafts = cds.model.definitions['dbProxy.BooksDrafts']
+      const { Books } = cds.entities('bookshop')
 
-      const res = await SELECT.from(BooksDrafts)
+      const res = await SELECT.from(Books.drafts)
 
       expect(res).to.be.an('array')
     })
