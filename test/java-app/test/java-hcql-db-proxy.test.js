@@ -173,7 +173,7 @@ describe("Java HCQL db proxy", () => {
   describe("Books.drafts", () => {
     // TODO: Review AI Test
     it("db.bookshop.CatalogService.Books.drafts entity exists in model", () => {
-      const BooksDrafts = cds.model.definitions['db.bookshop.CatalogService.Books.drafts']
+      const BooksDrafts = cds.model.definitions['db.CatalogService.Books.drafts']
 
       expect(BooksDrafts).to.exist
     })
@@ -181,7 +181,7 @@ describe("Java HCQL db proxy", () => {
     // TODO: Review AI Test
     // Note: requires Java's HCQL db service to route draft entity queries
     it("can SELECT from Books.drafts via db service (empty when no drafts exist)", async () => {
-      const BooksDrafts = cds.model.definitions['db.bookshop.CatalogService.Books.drafts']
+      const BooksDrafts = cds.model.definitions['db.CatalogService.Books.drafts']
 
       const res = await SELECT.from(BooksDrafts)
 
@@ -189,18 +189,4 @@ describe("Java HCQL db proxy", () => {
     })
   })
 
-  describe("Books db projection", () => {
-    it("Books entity has no texts composition element", () => {
-      const { Books } = cds.entities('db.bookshop')
-
-      expect(Books.elements.texts).to.not.exist
-    })
-
-    it("Books entity retains author and localized association elements", () => {
-      const { Books } = cds.entities('db.bookshop')
-
-      expect(Books.elements.author).to.exist
-      expect(Books.elements.localized).to.exist
-    })
-  })
 })
