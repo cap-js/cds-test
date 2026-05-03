@@ -6,4 +6,6 @@ service CatalogService {
 
   @odata.draft.enabled
   entity Books   as projection on bookshop.Books;
+
+  entity Genres as projection on bookshop.Genres;
 }
