@@ -11,7 +11,7 @@ describe("Java HCQL db proxy", () => {
   describe("SELECT", () => {
     // TODO: Review AI Test
     it("returns all Books", async () => {
-      const { Books } = cds.entities('db.bookshop')
+      const { Books } = cds.entities('bookshop')
 
       const res = await SELECT.from(Books)
 
@@ -20,7 +20,7 @@ describe("Java HCQL db proxy", () => {
 
     // TODO: Review AI Test
     it("filters with WHERE clause", async () => {
-      const { Books } = cds.entities('db.bookshop')
+      const { Books } = cds.entities('bookshop')
 
       const res = await SELECT.from(Books).where({ ID: 1 })
 
@@ -30,7 +30,7 @@ describe("Java HCQL db proxy", () => {
 
     // TODO: Review AI Test
     it("projects specific columns", async () => {
-      const { Books } = cds.entities('db.bookshop')
+      const { Books } = cds.entities('bookshop')
 
       const res = await SELECT.from(Books).columns('ID')
 
@@ -41,7 +41,7 @@ describe("Java HCQL db proxy", () => {
 
     // TODO: Review AI Test
     it("orders results", async () => {
-      const { Books } = cds.entities('db.bookshop')
+      const { Books } = cds.entities('bookshop')
 
       const res = await SELECT.from(Books).columns('ID').orderBy('ID desc')
 
@@ -50,7 +50,7 @@ describe("Java HCQL db proxy", () => {
 
     // TODO: Review AI Test
     it("limits result set", async () => {
-      const { Books } = cds.entities('db.bookshop')
+      const { Books } = cds.entities('bookshop')
 
       const res = await SELECT.from(Books).limit(2)
 
@@ -59,7 +59,7 @@ describe("Java HCQL db proxy", () => {
 
     // TODO: Review AI Test
     it("returns one row with SELECT.one", async () => {
-      const { Books } = cds.entities('db.bookshop')
+      const { Books } = cds.entities('bookshop')
 
       const res = await SELECT.one.from(Books).where({ ID: 2 })
 
@@ -69,7 +69,7 @@ describe("Java HCQL db proxy", () => {
 
     // TODO: Review AI Test
     it("returns undefined for no-match SELECT.one", async () => {
-      const { Books } = cds.entities('db.bookshop')
+      const { Books } = cds.entities('bookshop')
 
       const res = await SELECT.one.from(Books).where({ ID: 9999 })
 
@@ -78,7 +78,7 @@ describe("Java HCQL db proxy", () => {
 
     // TODO: Review AI Test
     it("expands to associated Author", async () => {
-      const { Books } = cds.entities('db.bookshop')
+      const { Books } = cds.entities('bookshop')
 
       const res = await SELECT.from(Books).where({ ID: 1 })
         .columns(b => { b.ID, b.author(a => a.name) })
@@ -91,7 +91,7 @@ describe("Java HCQL db proxy", () => {
   describe("INSERT", () => {
     // TODO: Review AI Test
     it("inserts a single entry", async () => {
-      const { Books } = cds.entities('db.bookshop')
+      const { Books } = cds.entities('bookshop')
 
       await INSERT.into(Books).entries({ ID: 99, title: 'Test Book', author_ID: 10 })
 
@@ -102,7 +102,7 @@ describe("Java HCQL db proxy", () => {
 
     // TODO: Review AI Test
     it("inserts multiple entries", async () => {
-      const { Books } = cds.entities('db.bookshop')
+      const { Books } = cds.entities('bookshop')
 
       await INSERT.into(Books).entries([
         { ID: 97, title: 'Book A', author_ID: 10 },
@@ -117,7 +117,7 @@ describe("Java HCQL db proxy", () => {
   describe("UPDATE", () => {
     // TODO: Review AI Test
     it("updates a row and returns affected row count", async () => {
-      const { Books } = cds.entities('db.bookshop')
+      const { Books } = cds.entities('bookshop')
 
       const count = await UPDATE(Books).set({ title: 'Updated' }).where({ ID: 1 })
 
@@ -130,7 +130,7 @@ describe("Java HCQL db proxy", () => {
   describe("DELETE", () => {
     // TODO: Review AI Test
     it("deletes a row and returns affected row count", async () => {
-      const { Books } = cds.entities('db.bookshop')
+      const { Books } = cds.entities('bookshop')
 
       const count = await DELETE.from(Books).where({ ID: 1 })
 
@@ -143,14 +143,14 @@ describe("Java HCQL db proxy", () => {
   describe("Books.texts (localized)", () => {
     // TODO: Review AI Test
     it("direct SELECT returns all localized rows", async () => {
-      const res = await SELECT.from('db.bookshop.Books.texts')
+      const res = await SELECT.from('bookshop.Books.texts')
 
-      expect(res.length).to.equal(3)
+      expect(res.length).to.equal(4)
     })
 
     // TODO: Review AI Test
     it("filters texts by ID and locale", async () => {
-      const res = await SELECT.from('db.bookshop.Books.texts').where({ ID: 1, locale: 'en' })
+      const res = await SELECT.from('bookshop.Books.texts').where({ ID: 1, locale: 'en' })
 
       expect(res.length).to.equal(1)
       expect(res[0].title).to.equal('Wuthering Heights')
@@ -158,13 +158,13 @@ describe("Java HCQL db proxy", () => {
 
     // TODO: Review AI Test
     it("data.reset() restores deleted texts row", async () => {
-      await DELETE.from('db.bookshop.Books.texts').where({ ID: 1, locale: 'en' })
-      const afterDelete = await SELECT.from('db.bookshop.Books.texts').where({ ID: 1, locale: 'en' })
+      await DELETE.from('bookshop.Books.texts').where({ ID: 1, locale: 'en' })
+      const afterDelete = await SELECT.from('bookshop.Books.texts').where({ ID: 1, locale: 'en' })
       expect(afterDelete.length).to.equal(0)
 
       await data.reset()
 
-      const afterReset = await SELECT.from('db.bookshop.Books.texts').where({ ID: 1, locale: 'en' })
+      const afterReset = await SELECT.from('bookshop.Books.texts').where({ ID: 1, locale: 'en' })
       expect(afterReset.length).to.equal(1)
       expect(afterReset[0].title).to.equal('Wuthering Heights')
     })
@@ -172,8 +172,11 @@ describe("Java HCQL db proxy", () => {
 
   describe("Books.drafts", () => {
     // TODO: Review AI Test
-    it("db.bookshop.CatalogService.Books.drafts entity exists in model", () => {
-      const BooksDrafts = cds.model.definitions['db.CatalogService.Books.drafts']
+    it("dbProxy.BooksDrafts entity exists in model", () => {
+      // TODO: This should also be available from cds.entities('bookshop')
+      // TODO: > If it is not, we should consider an override similar to our cds.connect.to('db') hack ... 
+      // TODO: > I am pretty sure it should either just work, or should be easy to spoof the model the test-runtime sees.
+      const BooksDrafts = cds.model.definitions['dbProxy.BooksDrafts']
 
       expect(BooksDrafts).to.exist
     })
@@ -181,7 +184,7 @@ describe("Java HCQL db proxy", () => {
     // TODO: Review AI Test
     // Note: requires Java's HCQL db service to route draft entity queries
     it("can SELECT from Books.drafts via db service (empty when no drafts exist)", async () => {
-      const BooksDrafts = cds.model.definitions['db.CatalogService.Books.drafts']
+      const BooksDrafts = cds.model.definitions['dbProxy.BooksDrafts']
 
       const res = await SELECT.from(BooksDrafts)
 

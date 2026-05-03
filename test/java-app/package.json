@@ -4,8 +4,5 @@
     "@cap-js/cds-test": "^1.0.0",
     "@sap/cds-dk": "^9",
     "chai": "^6.2.2"
-  },
-  "scripts": {
-    "_ci": "rm -rf node_modules package-lock.json srv/target **/.flattened-pom.xml srv/src/gen && npm i && mvn clean install"
   }
 }
