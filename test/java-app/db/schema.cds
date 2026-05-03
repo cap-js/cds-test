@@ -23,9 +23,17 @@ entity Genres {
 }
 
 entity ExpertReviews {
-  key ID        : UUID;
-      book      : Association to one Books;
-      title     : String(60);
-      shortText : String(140);
-      longText  : String;
+  key ID          : UUID;
+      book        : Association to one Books;
+      title       : String(60);
+      shortText   : String(140);
+      longText    : String;
+      reviewMeta  : Composition of one ReviewMeta;
+}
+
+entity ReviewMeta {
+  key ID               : UUID;
+      expertReview     : Association to one ExpertReviews;
+      rating           : Integer;
+      notes            : String;
 }
