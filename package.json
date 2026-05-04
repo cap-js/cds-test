@@ -31,7 +31,19 @@
     "jest": "npx jest --silent",
     "mocha": "npx mocha --parallel",
     "vitest": "npx vitest --globals --silent",
-    "node-test": "node --test"
+    "node-test": "node --test",
+    "node-test:lib":  "node --test 'test/lib/**/*.test.js'",
+    "node-test:node": "node --test 'test/runtime/node/**/*.test.js'",
+    "node-test:java": "node --test 'test/runtime/java/**/*.test.js'",
+    "jest:lib":       "npx jest --silent --testPathPatterns=test/lib",
+    "jest:node":      "npx jest --silent --testPathPatterns=test/runtime/node",
+    "jest:java":      "npx jest --silent --testPathPatterns=test/runtime/java",
+    "mocha:lib":      "npx mocha --parallel 'test/lib/**/*.test.js'",
+    "mocha:node":     "npx mocha --parallel 'test/runtime/node/**/*.test.js'",
+    "mocha:java":     "npx mocha --parallel 'test/runtime/java/**/*.test.js'",
+    "vitest:lib":     "npx vitest --globals --silent run test/lib",
+    "vitest:node":    "npx vitest --globals --silent run test/runtime/node",
+    "vitest:java":    "npx vitest --globals --silent run test/runtime/java"
   },
   "peerDependencies": {
     "@sap/cds": ">=9.8",
