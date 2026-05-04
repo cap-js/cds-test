@@ -34,16 +34,16 @@
     "node-test": "node --test",
     "node-test:lib":  "node --test test/lib/**/*.test.js",
     "node-test:node": "node --test test/runtime/node/**/*.test.js",
-    "node-test:java": "node --test --test-concurrency=1 test/runtime/java/**/*.test.js",
+    "node-test:java": "node --test test/runtime/java/**/*.test.js",
     "jest:lib":       "npx jest --silent --testPathPatterns=test/lib",
     "jest:node":      "npx jest --silent --testPathPatterns=test/runtime/node",
-    "jest:java":      "npx jest --silent --maxWorkers=1 --testPathPatterns=test/runtime/java --testTimeout=60000",
+    "jest:java":      "npx jest --silent --testPathPatterns=test/runtime/java",
     "mocha:lib":      "npx mocha --parallel test/lib/**/*.test.js",
     "mocha:node":     "npx mocha --parallel test/runtime/node/**/*.test.js",
-    "mocha:java":     "npx mocha test/runtime/java/**/*.test.js",
+    "mocha:java":     "npx mocha --parallel test/runtime/java/**/*.test.js",
     "vitest:lib":     "npx vitest run --globals --silent=true test/lib",
     "vitest:node":    "npx vitest run --globals --silent=true test/runtime/node",
-    "vitest:java":    "npx vitest run --globals --silent=true --hookTimeout=30000 --fileParallelism=false test/runtime/java"
+    "vitest:java":    "npx vitest run --globals --silent=true --hookTimeout=30000 test/runtime/java"
   },
   "peerDependencies": {
     "@sap/cds": ">=9.8",
