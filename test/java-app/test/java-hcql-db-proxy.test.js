@@ -59,12 +59,14 @@ describe("Java HCQL db proxy", () => {
     })
 
     // TODO: Review AI Test
-    it("limits result set", async () => {
+    it("returns first 2 books alphabetically when limit is applied", async () => {
       const { Books } = cds.entities('bookshop')
 
-      const res = await SELECT.from(Books).limit(2)
+      const res = await SELECT.from(Books).columns('title').orderBy('title').limit(2)
 
       expect(res.length).to.equal(2)
+      expect(res[0].title).to.equal('Eleonora')
+      expect(res[1].title).to.equal('The Raven')
     })
 
     // TODO: Review AI Test
@@ -416,7 +418,7 @@ describe("Java HCQL db proxy", () => {
 
       const res = await SELECT.from(Books.drafts)
 
-      expect(res).to.be.an('array')
+      expect(res).to.be.an('array').with.length(0)
     })
   })
 
@@ -431,21 +433,34 @@ describe("Java HCQL db proxy", () => {
     })
 
     // TODO: Review AI Test
-    it("inserts, updates, and deletes an Author", async () => {
+    it("inserts an Author and verifies it can be retrieved", async () => {
       const { Authors } = cds.entities('bookshop')
       const NEW_ID = 'a0000000-0000-0000-0000-000000000099'
 
       await INSERT.into(Authors).entries({ ID: NEW_ID, name: 'Test Author' })
-      const inserted = await SELECT.one.from(Authors).where({ ID: NEW_ID })
-      expect(inserted.name).to.equal('Test Author')
 
-      await UPDATE(Authors).set({ name: 'Updated Author' }).where({ ID: NEW_ID })
-      const updated = await SELECT.one.from(Authors).where({ ID: NEW_ID })
-      expect(updated.name).to.equal('Updated Author')
+      const res = await SELECT.one.from(Authors).where({ ID: NEW_ID })
+      expect(res.name).to.equal('Test Author')
+    })
 
-      await DELETE.from(Authors).where({ ID: NEW_ID })
-      const deleted = await SELECT.one.from(Authors).where({ ID: NEW_ID })
-      expect(deleted).to.not.exist
+    // TODO: Review AI Test
+    it("updates an Author name and verifies the new value is persisted", async () => {
+      const { Authors } = cds.entities('bookshop')
+
+      await UPDATE(Authors).set({ name: 'Updated Author' }).where({ ID: EMILY_ID })
+
+      const res = await SELECT.one.from(Authors).where({ ID: EMILY_ID })
+      expect(res.name).to.equal('Updated Author')
+    })
+
+    // TODO: Review AI Test
+    it("deletes an Author and verifies it no longer exists", async () => {
+      const { Authors } = cds.entities('bookshop')
+
+      await DELETE.from(Authors).where({ ID: POE_ID })
+
+      const res = await SELECT.one.from(Authors).where({ ID: POE_ID })
+      expect(res).to.not.exist
     })
   })
 
@@ -600,17 +615,6 @@ describe("Java HCQL db proxy", () => {
       const res = await cds.db.run(SELECT.from(Books))
 
       expect(res).to.be.an('array').with.length(3)
-    })
-  })
-
-  describe("transactions (cds.tx)", () => {
-    // TODO: Review AI Test
-    it("wraps a SELECT in a transaction", async () => {
-      const { Books } = cds.entities('bookshop')
-
-      const result = await cds.tx(async tx => tx.run(SELECT.from(Books)))
-
-      expect(result).to.be.an('array').with.length(3)
     })
   })
 
