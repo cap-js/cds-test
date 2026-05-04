@@ -43,7 +43,7 @@
     "mocha:java":     "npx mocha --parallel test/runtime/java/**/*.test.js",
     "vitest:lib":     "npx vitest run --globals --silent=true test/lib",
     "vitest:node":    "npx vitest run --globals --silent=true test/runtime/node",
-    "vitest:java":    "npx vitest run --globals --silent=true --hookTimeout=30000 test/runtime/java"
+    "vitest:java":    "npx vitest run --globals --silent=true --hookTimeout=30000 --fileParallelism=false test/runtime/java"
   },
   "peerDependencies": {
     "@sap/cds": ">=9.8",
