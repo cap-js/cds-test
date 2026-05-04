@@ -26,8 +26,8 @@
     "node": ">=22"
   },
   "scripts": {
-    "chest": "./bin/chest.js",
-    "test": "./bin/chest.js",
+    "chest": "node bin/chest.js",
+    "test": "node bin/chest.js",
     "jest": "npx jest --silent",
     "mocha": "npx mocha --parallel",
     "vitest": "npx vitest --globals --silent",
