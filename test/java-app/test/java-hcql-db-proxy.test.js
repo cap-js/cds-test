@@ -15,6 +15,10 @@ describe("Java HCQL db proxy", () => {
   const GOTHIC_ID    = 'c0000000-0000-0000-0000-000000000002'
   const REVIEW_ID      = 'd0000000-0000-0000-0000-000000000001'
   const REVIEW_META_ID = 'e0000000-0000-0000-0000-000000000001'
+  const REVIEW2_ID     = 'f0000000-0000-0000-0000-000000000001'
+  const REVIEW3_ID     = 'f0000000-0000-0000-0000-000000000002'
+  const META2_ID       = 'f0000000-0000-0000-0000-000000000003'
+  const META3_ID       = 'f0000000-0000-0000-0000-000000000004'
 
   beforeEach(() => data.reset())
 
@@ -254,6 +258,111 @@ describe("Java HCQL db proxy", () => {
       expect(res.length).to.equal(1)
       expect(res[0].genre.name).to.equal('Gothic')
       expect(res[0].genre.parent.name).to.equal('Fiction')
+    })
+
+    // TODO: Review AI Test
+    it("filters Books by LIKE pattern", async () => {
+      const { Books } = cds.entities('bookshop')
+
+      const res = await SELECT.from(Books).where('title like', '%Heights%')
+
+      expect(res.length).to.equal(1)
+      expect(res[0].title).to.equal('Wuthering Heights')
+    })
+
+    // TODO: Review AI Test
+    it("filters Books by OR condition", async () => {
+      const { Books } = cds.entities('bookshop')
+
+      const res = await SELECT.from(Books).where('title =', 'Eleonora').or('title =', 'The Raven')
+
+      expect(res.length).to.equal(2)
+      expect(res.map(r => r.title).sort()).to.deep.equal(['Eleonora', 'The Raven'])
+    })
+
+    // TODO: Review AI Test
+    it("explicit 'is null' selects Books without a genre", async () => {
+      const { Books } = cds.entities('bookshop')
+      await INSERT.into(Books).entries({ title: 'Genre-less Book', author_ID: EMILY_ID })
+
+      const res = await SELECT.from(Books).where`genre_ID is null`
+
+      expect(res.length).to.equal(1)
+      expect(res[0].title).to.equal('Genre-less Book')
+    })
+
+    // TODO: Review AI Test
+    it("explicit 'is not null' selects only Books that have a genre", async () => {
+      const { Books } = cds.entities('bookshop')
+
+      const res = await SELECT.from(Books).where`genre_ID is not null`
+
+      expect(res.length).to.equal(3)
+    })
+  })
+
+  describe("WHERE comparison operators", () => {
+    beforeEach(async () => {
+      const { ExpertReviews, ReviewMeta } = cds.entities('bookshop')
+
+      await INSERT.into(ExpertReviews).entries([
+        { ID: REVIEW2_ID, book_ID: RAVEN_ID,    title: 'Review 2', shortText: 'Short 2', longText: 'Long 2' },
+        { ID: REVIEW3_ID, book_ID: ELEONORA_ID, title: 'Review 3', shortText: 'Short 3', longText: 'Long 3' },
+      ])
+      await INSERT.into(ReviewMeta).entries([
+        { ID: META2_ID, expertReview_ID: REVIEW2_ID, rating: 3, notes: 'Low' },
+        { ID: META3_ID, expertReview_ID: REVIEW3_ID, rating: 4, notes: 'Mid' },
+      ])
+    })
+
+    // TODO: Review AI Test
+    it("greater-than returns ReviewMeta with rating > 3", async () => {
+      const { ReviewMeta } = cds.entities('bookshop')
+
+      const res = await SELECT.from(ReviewMeta).where('rating >', 3)
+
+      expect(res.length).to.equal(2)
+      expect(res.map(r => r.rating).sort()).to.deep.equal([4, 5])
+    })
+
+    // TODO: Review AI Test
+    it("less-than returns ReviewMeta with rating < 5", async () => {
+      const { ReviewMeta } = cds.entities('bookshop')
+
+      const res = await SELECT.from(ReviewMeta).where('rating <', 5)
+
+      expect(res.length).to.equal(2)
+      expect(res.map(r => r.rating).sort()).to.deep.equal([3, 4])
+    })
+
+    // TODO: Review AI Test
+    it("greater-than-or-equal returns ReviewMeta with rating >= 4", async () => {
+      const { ReviewMeta } = cds.entities('bookshop')
+
+      const res = await SELECT.from(ReviewMeta).where('rating >=', 4)
+
+      expect(res.length).to.equal(2)
+      expect(res.map(r => r.rating).sort()).to.deep.equal([4, 5])
+    })
+
+    // TODO: Review AI Test
+    it("less-than-or-equal returns ReviewMeta with rating <= 4", async () => {
+      const { ReviewMeta } = cds.entities('bookshop')
+
+      const res = await SELECT.from(ReviewMeta).where('rating <=', 4)
+
+      expect(res.length).to.equal(2)
+      expect(res.map(r => r.rating).sort()).to.deep.equal([3, 4])
+    })
+
+    // TODO: Review AI Test
+    it("between returns ReviewMeta with rating between 3 and 4", async () => {
+      const { ReviewMeta } = cds.entities('bookshop')
+
+      const res = await SELECT.from(ReviewMeta).where('rating between', 3, 'and', 4)
+
+      expect(res.length).to.equal(2)
+      expect(res.map(r => r.rating).sort()).to.deep.equal([3, 4])
     })
   })
 
@@ -619,6 +728,19 @@ describe("Java HCQL db proxy", () => {
   })
 
   describe("aggregate queries", () => {
+    beforeEach(async () => {
+      const { ExpertReviews, ReviewMeta } = cds.entities('bookshop')
+
+      await INSERT.into(ExpertReviews).entries([
+        { ID: REVIEW2_ID, book_ID: RAVEN_ID,    title: 'Review 2', shortText: 'Short 2', longText: 'Long 2' },
+        { ID: REVIEW3_ID, book_ID: ELEONORA_ID, title: 'Review 3', shortText: 'Short 3', longText: 'Long 3' },
+      ])
+      await INSERT.into(ReviewMeta).entries([
+        { ID: META2_ID, expertReview_ID: REVIEW2_ID, rating: 3, notes: 'Low' },
+        { ID: META3_ID, expertReview_ID: REVIEW3_ID, rating: 4, notes: 'Mid' },
+      ])
+    })
+
     // TODO: Review AI Test
     it("groups by author_ID and returns distinct author rows", async () => {
       const { Books } = cds.entities('bookshop')
@@ -626,6 +748,147 @@ describe("Java HCQL db proxy", () => {
       const res = await SELECT.from(Books).groupBy('author_ID').columns('author_ID')
 
       expect(res).to.be.an('array').with.length(2)
+    })
+
+    // TODO: Review AI Test
+    it("count(*) returns total number of ReviewMeta rows", async () => {
+      const { ReviewMeta } = cds.entities('bookshop')
+
+      const res = await SELECT.from(ReviewMeta).columns('count(*) as count')
+
+      expect(res.length).to.equal(1)
+      expect(Number(res[0].count)).to.equal(3)
+    })
+
+    // TODO: Review AI Test
+    it("max(rating) returns highest rating across all ReviewMeta rows", async () => {
+      const { ReviewMeta } = cds.entities('bookshop')
+
+      const res = await SELECT.from(ReviewMeta).columns('max(rating) as maxRating')
+
+      expect(res.length).to.equal(1)
+      expect(Number(res[0].maxRating)).to.equal(5)
+    })
+
+    // TODO: Review AI Test
+    it("min(rating) returns lowest rating across all ReviewMeta rows", async () => {
+      const { ReviewMeta } = cds.entities('bookshop')
+
+      const res = await SELECT.from(ReviewMeta).columns('min(rating) as minRating')
+
+      expect(res.length).to.equal(1)
+      expect(Number(res[0].minRating)).to.equal(3)
+    })
+
+    // TODO: Review AI Test
+    it("sum(rating) returns sum of all ratings", async () => {
+      const { ReviewMeta } = cds.entities('bookshop')
+
+      const res = await SELECT.from(ReviewMeta).columns('sum(rating) as sumRating')
+
+      expect(res.length).to.equal(1)
+      expect(Number(res[0].sumRating)).to.equal(12)
+    })
+
+    // TODO: Review AI Test
+    it("avg(rating) returns average rating", async () => {
+      const { ReviewMeta } = cds.entities('bookshop')
+
+      const res = await SELECT.from(ReviewMeta).columns('avg(rating) as avgRating')
+
+      expect(res.length).to.equal(1)
+      expect(Number(res[0].avgRating)).to.equal(4)
+    })
+
+    // TODO: Review AI Test
+    it("having filters author groups with more than one book", async () => {
+      const { Books } = cds.entities('bookshop')
+
+      const res = await SELECT.from(Books).groupBy('author_ID').columns('author_ID').having('count(*) >', 1)
+
+      expect(res.length).to.equal(1)
+      expect(res[0].author_ID).to.equal(POE_ID)
+    })
+  })
+
+  describe("UPSERT", () => {
+    // TODO: Review AI Test
+    it("updates an existing Book when ID matches", async () => {
+      const { Books } = cds.entities('bookshop')
+
+      await UPSERT.into(Books).entries({ ID: WUTHERING_ID, title: 'Upserted Title' })
+
+      const res = await SELECT.one.from(Books).where({ ID: WUTHERING_ID })
+      expect(res).to.exist
+      expect(res.title).to.equal('Upserted Title')
+    })
+
+    // TODO: Review AI Test
+    it("inserts a new Book when no row with given ID exists", async () => {
+      const { Books } = cds.entities('bookshop')
+      const NEW_ID = 'b0000000-0000-0000-0000-000000000099'
+
+      await UPSERT.into(Books).entries({ ID: NEW_ID, title: 'New Upserted Book', author_ID: EMILY_ID })
+
+      const res = await SELECT.one.from(Books).where({ ID: NEW_ID })
+      expect(res).to.exist
+      expect(res.title).to.equal('New Upserted Book')
+    })
+  })
+
+  describe("SELECT.localized", () => {
+    // TODO: Review AI Test
+    it("SELECT.localized returns Books (empirical — documents whether HCQL supports locale)", async () => {
+      const { Books } = cds.entities('bookshop')
+
+      const res = await SELECT.localized(Books)
+
+      expect(res).to.be.an('array')
+      expect(res.length).to.equal(3)
+    })
+  })
+
+  describe("combination queries", () => {
+    // TODO: Review AI Test
+    it("WHERE + groupBy + having returns only author with more than one book matching filter", async () => {
+      const { Books } = cds.entities('bookshop')
+
+      const res = await SELECT.from(Books)
+        .where('author_ID =', POE_ID)
+        .groupBy('author_ID')
+        .columns('author_ID')
+        .having('count(*) >', 0)
+
+      expect(res.length).to.equal(1)
+      expect(res[0].author_ID).to.equal(POE_ID)
+    })
+
+    // TODO: Review AI Test
+    it("WHERE IN + orderBy + limit returns first matching Book alphabetically", async () => {
+      const { Books } = cds.entities('bookshop')
+
+      const res = await SELECT.from(Books)
+        .where({ author_ID: { in: [POE_ID] } })
+        .orderBy('title')
+        .limit(1)
+
+      expect(res.length).to.equal(1)
+      expect(res[0].title).to.equal('Eleonora')
+    })
+
+    // TODO: Review AI Test
+    it("expand + WHERE + orderBy + limit returns author for first Poe book alphabetically", async () => {
+      const { Books } = cds.entities('bookshop')
+
+      const res = await SELECT.from(Books)
+        .where({ author_ID: POE_ID })
+        .columns(b => { b.ID, b.title, b.author(a => a.name) })
+        .orderBy('title')
+        .limit(1)
+
+      expect(res.length).to.equal(1)
+      expect(res[0].title).to.equal('Eleonora')
+      expect(res[0].author.name).to.equal('Edgar Allan Poe')
     })
   })
 
