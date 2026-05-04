@@ -4,7 +4,7 @@ describe("Java HCQL db proxy", () => {
   if (!/java/.test(process.env.CDS_ENV))
     return it("skipped in profile node", () => {});
 
-  const { expect, cds, test: { data } } = cds_test(__dirname + "/..");
+  const { expect, cds, test: { data } } = cds_test(__dirname + "/app");
 
   const EMILY_ID     = 'a0000000-0000-0000-0000-000000000001'
   const POE_ID       = 'a0000000-0000-0000-0000-000000000002'

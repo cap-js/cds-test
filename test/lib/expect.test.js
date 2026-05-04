@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 if (typeof describe === 'undefined') ({ describe, it } = require('node:test'))
-const expect = require('../lib/expect')
+const expect = require('../../lib/expect')
 
 describe (`supported chai features subset ...`, ()=>{
 

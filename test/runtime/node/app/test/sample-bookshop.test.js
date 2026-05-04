@@ -1,4 +1,4 @@
-const cds_test = require('../../../lib/cds-test')
+const cds_test = require('../../../../../lib/cds-test')
 
 describe('Sample tests', () => {
   const { GET, expect, cds } = cds_test (__dirname+'/..')
