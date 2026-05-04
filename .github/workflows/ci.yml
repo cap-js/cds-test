@@ -45,7 +45,9 @@ jobs:
 
       - name: Build Java app
         if: matrix.suite == 'java'
-        run: mvn -f test/runtime/java/app/pom.xml package -DskipTests
+        run: |
+          node -e "require('./lib/java.js').generateProxy('test/runtime/java/app').catch(e=>{console.error(e);process.exit(1)})"
+          mvn -f test/runtime/java/app/pom.xml package -DskipTests
 
       - name: Node Test Runner
         run: npm run node-test:${{ matrix.suite }}
