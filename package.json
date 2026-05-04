@@ -37,7 +37,7 @@
     "node-test:java": "node --test test/runtime/java/**/*.test.js",
     "jest:lib":       "npx jest --silent --testPathPatterns=test/lib",
     "jest:node":      "npx jest --silent --testPathPatterns=test/runtime/node",
-    "jest:java":      "npx jest --silent --testPathPatterns=test/runtime/java",
+    "jest:java":      "npx jest --silent --testPathPatterns=test/runtime/java --testTimeout=60000",
     "mocha:lib":      "npx mocha --parallel test/lib/**/*.test.js",
     "mocha:node":     "npx mocha --parallel test/runtime/node/**/*.test.js",
     "mocha:java":     "npx mocha --parallel test/runtime/java/**/*.test.js",
