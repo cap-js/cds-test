@@ -38,6 +38,11 @@ jobs:
 
       - run: npm ci
 
+      - name: Install Java app dependencies
+        if: matrix.suite == 'java'
+        run: npm ci
+        working-directory: test/runtime/java/app
+
       - name: Build Java app
         if: matrix.suite == 'java'
         run: mvn -f test/runtime/java/app/pom.xml package -DskipTests
