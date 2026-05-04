@@ -38,9 +38,9 @@ jobs:
 
       - run: npm ci
 
-      - name: Install Java app dependencies
+      - name: Warm npm cache for Java app
         if: matrix.suite == 'java'
-        run: npm ci
+        run: npm ci && rm -rf node_modules
         working-directory: test/runtime/java/app
 
       - name: Build Java app
