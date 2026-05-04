@@ -40,7 +40,7 @@
     "jest:java":      "npx jest --silent --testPathPatterns=test/runtime/java  --testTimeout=60000",
     "mocha:lib":      "npx mocha --parallel test/lib/**/*.test.js",
     "mocha:node":     "npx mocha --parallel test/runtime/node/**/*.test.js",
-    "mocha:java":     "npx mocha --parallel test/runtime/java/**/*.test.js",
+    "mocha:java":     "npx mocha --parallel --timeout 30000 test/runtime/java/**/*.test.js",
     "vitest:lib":     "npx vitest run --globals --silent=true test/lib",
     "vitest:node":    "npx vitest run --globals --silent=true test/runtime/node",
     "vitest:java":    "npx vitest run --globals --silent=true --hookTimeout=30000 test/runtime/java"
