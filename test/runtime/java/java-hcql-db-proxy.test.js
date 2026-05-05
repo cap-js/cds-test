@@ -686,6 +686,25 @@ describe("Java HCQL db proxy", () => {
     });
   });
 
+  describe("Authors.books — unmanaged association", () => {
+    it("should expand books of an author via unmanaged back-link", async () => {
+      const { Authors } = cds.entities("bookshop");
+
+      const res = await SELECT.from(Authors)
+        .where({ ID: POE_ID })
+        .columns((a) => {
+          (a.name, a.books((b) => b.title));
+        });
+
+      expect(res.length).to.equal(1);
+      expect(res[0].name).to.equal("Edgar Allan Poe");
+      expect(res[0].books).to.have.length(2);
+      expect(res[0].books.map((b) => b.title).sort()).to.deep.equal(
+        ["Eleonora", "The Raven"],
+      );
+    });
+  });
+
   describe("Review_Meta nested composition", () => {
     it("should return Review_Meta with seed values via ExpertReviews composition expand", async () => {
       const { ExpertReviews } = cds.entities("bookshop");

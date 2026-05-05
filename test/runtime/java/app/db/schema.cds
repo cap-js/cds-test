@@ -1,8 +1,9 @@
 namespace bookshop;
 
 entity Authors {
-  key ID   : UUID;
-      name : String;
+  key ID    : UUID;
+      name  : String;
+      books : Association to many Books on books.author = $self;
 }
 
 entity Books {
