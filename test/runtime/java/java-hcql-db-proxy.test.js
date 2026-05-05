@@ -673,6 +673,22 @@ describe("Java HCQL db proxy", () => {
       const res = await SELECT.one.from(ExpertReviews).where({ ID: REVIEW_ID })
       expect(res).to.not.exist
     })
+
+    // TODO: Review AI Test
+    it("array-typed tags field is accessible via the HCQL proxy", async () => {
+      const { ExpertReviews } = cds.entities('bookshop')
+
+      await INSERT.into(ExpertReviews).entries({
+        book_ID: WUTHERING_ID,
+        title: 'Tagged Review',
+        shortText: 'A review with tags.',
+        tags: ['a', 'list', 'of', 'tags']
+      })
+
+      const res = await SELECT.one.from(ExpertReviews).where({ title: 'Tagged Review' })
+      expect(res).to.exist
+      expect(res).to.deep.equal(['a', 'list', 'of', 'tags'])
+    })
   })
 
   describe("ReviewMeta nested composition", () => {
