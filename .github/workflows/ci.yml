@@ -50,16 +50,16 @@ jobs:
           mvn -f test/runtime/java/app/pom.xml package -DskipTests
 
       - name: Node Test Runner
-        run: npm run node-test:${{ matrix.suite }}
+        run: npm run node-test:${{ matrix.suite }}:ci
 
       - name: Jest
-        run: npm run jest:${{ matrix.suite }}
+        run: npm run jest:${{ matrix.suite }}:ci
 
       - name: Vitest
-        run: npm run vitest:${{ matrix.suite }}
+        run: npm run vitest:${{ matrix.suite }}:ci
 
       - name: Mocha
-        run: npm run mocha:${{ matrix.suite }}
+        run: npm run mocha:${{ matrix.suite }}:ci
 
       - name: Chest
         if: matrix.suite == 'node'
