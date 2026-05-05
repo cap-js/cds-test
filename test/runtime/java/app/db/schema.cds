@@ -28,6 +28,7 @@ entity ExpertReviews {
       title       : String(60);
       shortText   : String(140);
       longText    : String;
+      tags        : many String;
       reviewMeta  : Composition of one ReviewMeta;
 }
 
