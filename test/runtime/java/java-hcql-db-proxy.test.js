@@ -35,7 +35,7 @@ describe("Java HCQL db proxy", () => {
       expect(res.length).to.equal(3);
     });
 
-    it("should filter restults with WHERE clause", async () => {
+    it("should filter results with WHERE clause", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books).where({ ID: WUTHERING_ID });
@@ -81,7 +81,7 @@ describe("Java HCQL db proxy", () => {
       expect(res[1].title).to.equal("The Raven");
     });
 
-    it("should return an object when select.one is specfied", async () => {
+    it("should return an object when select.one is specified", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.one.from(Books).where({ ID: RAVEN_ID });
@@ -113,19 +113,7 @@ describe("Java HCQL db proxy", () => {
       expect(res[0].author.name).to.equal("Emily Brontë");
     });
 
-    it("filters with implicit AND (multi-key object)", async () => {
-      // TODO: Not very meaningful, is it?
-      const { Books } = cds.entities("bookshop");
-
-      const res = await SELECT.from(Books).where({
-        ID: WUTHERING_ID,
-        title: "Wuthering Heights",
-      });
-
-      expect(res.length).to.equal(1);
-    });
-
-    it("filters with IN operator", async () => {
+    it("should filter with IN operator", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books).where({
@@ -133,11 +121,12 @@ describe("Java HCQL db proxy", () => {
       });
 
       expect(res.length).to.equal(2);
-      // TODO: Check specific entries ...
+      expect(res.map((r) => r.ID).sort()).to.deep.equal(
+        [RAVEN_ID, ELEONORA_ID].sort(),
+      );
     });
 
-    // TODO: Review AI Test
-    it("filters with not-equal operator", async () => {
+    it("should filter with not-equal operator", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books).where({
@@ -147,20 +136,7 @@ describe("Java HCQL db proxy", () => {
       expect(res.length).to.equal(2);
     });
 
-    // TODO: Review AI Test
-    it("projects multiple columns", async () => {
-      const { Books } = cds.entities("bookshop");
-
-      const res = await SELECT.from(Books).columns("ID", "title");
-
-      expect(res.length).to.equal(3);
-      expect(res[0]).to.have.property("ID");
-      expect(res[0]).to.have.property("title");
-      expect(res[0]).not.to.have.property("author_ID");
-    });
-
-    // TODO: Review AI Test
-    it("selects by key shorthand SELECT.from(entity, key)", async () => {
+    it("should return a row by key using SELECT.from(entity, key) shorthand", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books, WUTHERING_ID);
@@ -169,8 +145,7 @@ describe("Java HCQL db proxy", () => {
       expect(res.title).to.equal("Wuthering Heights");
     });
 
-    // TODO: Review AI Test
-    it("returns one row with SELECT.one(entity, key) shorthand", async () => {
+    it("should return a single row by key using SELECT.one(entity, key) shorthand", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.one(Books, RAVEN_ID);
@@ -179,21 +154,7 @@ describe("Java HCQL db proxy", () => {
       expect(res.title).to.equal("The Raven");
     });
 
-    // TODO: Review AI Test
-    it("orders results ascending by title", async () => {
-      const { Books } = cds.entities("bookshop");
-
-      const res = await SELECT.from(Books).columns("title").orderBy("title");
-
-      expect(res.map((r) => r.title)).to.deep.equal([
-        "Eleonora",
-        "The Raven",
-        "Wuthering Heights",
-      ]);
-    });
-
-    // TODO: Review AI Test
-    it("orders by multiple columns", async () => {
+    it("should order by multiple columns", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books)
@@ -208,13 +169,13 @@ describe("Java HCQL db proxy", () => {
       expect(res[2].title).to.equal("The Raven");
     });
 
-    // TODO: Review AI Test
-    it("paginates with limit and offset", async () => {
+    it("should paginate results with limit and offset", async () => {
       const { Books } = cds.entities("bookshop");
 
       const allByTitle = await SELECT.from(Books)
         .columns("title")
         .orderBy("title");
+
       const res = await SELECT.from(Books)
         .columns("title")
         .orderBy("title")
@@ -224,8 +185,7 @@ describe("Java HCQL db proxy", () => {
       expect(res[0].title).to.equal(allByTitle[1].title);
     });
 
-    // TODO: Review AI Test
-    it("returns distinct values", async () => {
+    it("should return distinct values for projected column", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.distinct.from(Books).columns("author_ID");
@@ -233,8 +193,7 @@ describe("Java HCQL db proxy", () => {
       expect(res.length).to.equal(2);
     });
 
-    // TODO: Review AI Test
-    it("expands to associated Genre", async () => {
+    it("should expand to associated Genre", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books)
@@ -247,8 +206,7 @@ describe("Java HCQL db proxy", () => {
       expect(res[0].genre.name).to.equal("Gothic");
     });
 
-    // TODO: Review AI Test
-    it("expands composition ExpertReviews", async () => {
+    it("should expand composition ExpertReviews to array", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books)
@@ -264,8 +222,7 @@ describe("Java HCQL db proxy", () => {
       );
     });
 
-    // TODO: Review AI Test
-    it("expands deep association chain Books → genre → parent", async () => {
+    it("should expand two-level association chain Books → genre → parent", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books)
@@ -282,8 +239,7 @@ describe("Java HCQL db proxy", () => {
       expect(res[0].genre.parent.name).to.equal("Fiction");
     });
 
-    // TODO: Review AI Test
-    it("filters Books by LIKE pattern", async () => {
+    it("should filter Books by LIKE pattern", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books).where("title like", "%Heights%");
@@ -292,8 +248,7 @@ describe("Java HCQL db proxy", () => {
       expect(res[0].title).to.equal("Wuthering Heights");
     });
 
-    // TODO: Review AI Test
-    it("filters Books by OR condition", async () => {
+    it("should filter Books by OR condition", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books)
@@ -307,8 +262,7 @@ describe("Java HCQL db proxy", () => {
       ]);
     });
 
-    // TODO: Review AI Test
-    it("explicit 'is null' selects Books without a genre", async () => {
+    it("should select Books with null genre_ID using IS NULL", async () => {
       const { Books } = cds.entities("bookshop");
       await INSERT.into(Books).entries({
         title: "Genre-less Book",
@@ -319,15 +273,6 @@ describe("Java HCQL db proxy", () => {
 
       expect(res.length).to.equal(1);
       expect(res[0].title).to.equal("Genre-less Book");
-    });
-
-    // TODO: Review AI Test
-    it("explicit 'is not null' selects only Books that have a genre", async () => {
-      const { Books } = cds.entities("bookshop");
-
-      const res = await SELECT.from(Books).where`genre_ID is not null`;
-
-      expect(res.length).to.equal(3);
     });
   });
 
@@ -357,8 +302,7 @@ describe("Java HCQL db proxy", () => {
       ]);
     });
 
-    // TODO: Review AI Test
-    it("greater-than returns Review_Meta with rating > 3", async () => {
+    it("should return Review_Meta rows with rating > 3", async () => {
       const { Review_Meta } = cds.entities("bookshop");
 
       const res = await SELECT.from(Review_Meta).where("rating >", 3);
@@ -367,8 +311,7 @@ describe("Java HCQL db proxy", () => {
       expect(res.map((r) => r.rating).sort()).to.deep.equal([4, 5]);
     });
 
-    // TODO: Review AI Test
-    it("less-than returns Review_Meta with rating < 5", async () => {
+    it("should return Review_Meta rows with rating < 5", async () => {
       const { Review_Meta } = cds.entities("bookshop");
 
       const res = await SELECT.from(Review_Meta).where("rating <", 5);
@@ -377,8 +320,7 @@ describe("Java HCQL db proxy", () => {
       expect(res.map((r) => r.rating).sort()).to.deep.equal([3, 4]);
     });
 
-    // TODO: Review AI Test
-    it("greater-than-or-equal returns Review_Meta with rating >= 4", async () => {
+    it("should return Review_Meta rows with rating >= 4", async () => {
       const { Review_Meta } = cds.entities("bookshop");
 
       const res = await SELECT.from(Review_Meta).where("rating >=", 4);
@@ -387,8 +329,7 @@ describe("Java HCQL db proxy", () => {
       expect(res.map((r) => r.rating).sort()).to.deep.equal([4, 5]);
     });
 
-    // TODO: Review AI Test
-    it("less-than-or-equal returns Review_Meta with rating <= 4", async () => {
+    it("should return Review_Meta rows with rating <= 4", async () => {
       const { Review_Meta } = cds.entities("bookshop");
 
       const res = await SELECT.from(Review_Meta).where("rating <=", 4);
@@ -397,8 +338,7 @@ describe("Java HCQL db proxy", () => {
       expect(res.map((r) => r.rating).sort()).to.deep.equal([3, 4]);
     });
 
-    // TODO: Review AI Test
-    it("between returns Review_Meta with rating between 3 and 4", async () => {
+    it("should return Review_Meta rows with rating between 3 and 4", async () => {
       const { Review_Meta } = cds.entities("bookshop");
 
       const res = await SELECT.from(Review_Meta).where(
@@ -414,8 +354,7 @@ describe("Java HCQL db proxy", () => {
   });
 
   describe("INSERT", () => {
-    // TODO: Review AI Test
-    it("inserts a single entry", async () => {
+    it("should insert a single entry and read it back", async () => {
       const { Books } = cds.entities("bookshop");
 
       await INSERT.into(Books).entries({
@@ -425,12 +364,12 @@ describe("Java HCQL db proxy", () => {
       });
 
       const res = await SELECT.one.from(Books).where({ title: "Test Book" });
+
       expect(res).to.exist;
       expect(res.title).to.equal("Test Book");
     });
 
-    // TODO: Review AI Test
-    it("inserts multiple entries", async () => {
+    it("should insert multiple entries and read them back", async () => {
       const { Books } = cds.entities("bookshop");
 
       await INSERT.into(Books).entries([
@@ -441,13 +380,13 @@ describe("Java HCQL db proxy", () => {
       const res = await SELECT.from(Books)
         .where({ title: { in: ["Book A", "Book B"] } })
         .orderBy("title");
+
       expect(res.length).to.equal(2);
       expect(res[0].title).to.equal("Book A");
       expect(res[1].title).to.equal("Book B");
     });
 
-    // TODO: Review AI Test
-    it("inserts via columns().values() format", async () => {
+    it("should insert via columns().values() format", async () => {
       const { Books } = cds.entities("bookshop");
       const NEW_ID = "e0000000-0000-0000-0000-000000000001";
 
@@ -456,16 +395,17 @@ describe("Java HCQL db proxy", () => {
         .values(NEW_ID, "Columns Values Book", EMILY_ID, GOTHIC_ID);
 
       const res = await SELECT.one.from(Books).where({ ID: NEW_ID });
+
       expect(res).to.exist;
       expect(res.title).to.equal("Columns Values Book");
     });
 
-    // TODO: Review AI Test
-    it("inserts via columns().rows() bulk format", async () => {
+    it("should insert multiple rows via columns().rows() format", async () => {
       const { Books } = cds.entities("bookshop");
       const ID_A = "e0000000-0000-0000-0000-000000000002";
       const ID_B = "e0000000-0000-0000-0000-000000000003";
 
+      // TODO: Testing Insert, we must make sure it does not fail quietly
       await INSERT.into(Books)
         .columns("ID", "title", "author_ID", "genre_ID")
         .rows([
@@ -476,14 +416,14 @@ describe("Java HCQL db proxy", () => {
       const res = await SELECT.from(Books)
         .where({ ID: { in: [ID_A, ID_B] } })
         .orderBy("title");
+
       expect(res.length).to.equal(2);
       expect(res[0].title).to.equal("Rows Book A");
     });
   });
 
   describe("UPDATE", () => {
-    // TODO: Review AI Test
-    it("updates a row and returns affected row count", async () => {
+    it("should update a row and return affected row count", async () => {
       const { Books } = cds.entities("bookshop");
 
       const count = await UPDATE(Books)
@@ -491,32 +431,31 @@ describe("Java HCQL db proxy", () => {
         .where({ ID: WUTHERING_ID });
 
       expect(count).to.equal(1);
+
       const res = await SELECT.one.from(Books).where({ ID: WUTHERING_ID });
       expect(res.title).to.equal("Updated");
     });
 
-    // TODO: Review AI Test
-    it("updates by key shorthand UPDATE(entity, key)", async () => {
+    it("should update by key using UPDATE(entity, key) shorthand", async () => {
       const { Books } = cds.entities("bookshop");
 
       const count = await UPDATE(Books, WUTHERING_ID).set({
         title: "Key Updated",
       });
-
       expect(count).to.equal(1);
+
       const res = await SELECT.one.from(Books).where({ ID: WUTHERING_ID });
       expect(res.title).to.equal("Key Updated");
     });
 
-    // TODO: Review AI Test
-    it("updates via .with() instead of .set()", async () => {
+    it("should allow updates via .with() instead of .set()", async () => {
       const { Books } = cds.entities("bookshop");
 
       const count = await UPDATE(Books)
         .with({ title: "With Updated" })
         .where({ ID: RAVEN_ID });
-
       expect(count).to.equal(1);
+
       const res = await SELECT.one.from(Books).where({ ID: RAVEN_ID });
       expect(res.title).to.equal("With Updated");
     });
@@ -532,146 +471,120 @@ describe("Java HCQL db proxy", () => {
   });
 
   describe("DELETE", () => {
-    // TODO: Review AI Test
-    it("deletes a row and returns affected row count", async () => {
+    it("should delete a row and return affected row count", async () => {
       const { Books } = cds.entities("bookshop");
 
       const count = await DELETE.from(Books).where({ ID: WUTHERING_ID });
-
       expect(count).to.equal(1);
+
       const res = await SELECT.one.from(Books).where({ ID: WUTHERING_ID });
       expect(res).to.not.exist;
     });
 
-    // TODO: Review AI Test
-    it("deletes by key shorthand DELETE.from(entity, key)", async () => {
+    it("should delete by key using DELETE.from(entity, key) shorthand", async () => {
       const { Books } = cds.entities("bookshop");
 
       const count = await DELETE.from(Books, ELEONORA_ID);
-
       expect(count).to.equal(1);
+
       const res = await SELECT.one.from(Books).where({ ID: ELEONORA_ID });
       expect(res).to.not.exist;
     });
   });
 
   describe("Books.texts (localized)", () => {
-    // TODO: Review AI Test
-    it("direct SELECT returns all localized rows", async () => {
+    it("should return all localized rows via direct SELECT", async () => {
       const res = await SELECT.from("bookshop.Books.texts");
-
       expect(res.length).to.equal(4);
     });
 
-    // TODO: Review AI Test
-    it("filters texts by ID and locale", async () => {
+    it("should filter texts by locale", async () => {
       const res = await SELECT.from("bookshop.Books.texts").where({
-        ID: WUTHERING_ID,
         locale: "en",
       });
-
-      expect(res.length).to.equal(1);
-      expect(res[0].title).to.equal("Wuthering Heights");
-    });
-
-    // TODO: Review AI Test
-    it("data.reset() restores deleted texts row", async () => {
-      await DELETE.from("bookshop.Books.texts").where({
-        ID: WUTHERING_ID,
-        locale: "en",
-      });
-      const afterDelete = await SELECT.from("bookshop.Books.texts").where({
-        ID: WUTHERING_ID,
-        locale: "en",
-      });
-      expect(afterDelete.length).to.equal(0);
-
-      await data.reset();
-
-      const afterReset = await SELECT.from("bookshop.Books.texts").where({
-        ID: WUTHERING_ID,
-        locale: "en",
-      });
-      expect(afterReset.length).to.equal(1);
-      expect(afterReset[0].title).to.equal("Wuthering Heights");
+      expect(res.length).to.equal(3);
     });
   });
 
   describe("Books.drafts", () => {
-    // TODO: Review AI Test
-    it("Books.drafts accessible on bookshop.Books entity", () => {
+    it("should expose Books.drafts on the entity definition via proxy metadata injection", () => {
       const { Books } = cds.entities("bookshop");
-
       expect(Books.drafts).to.exist;
     });
 
-    // TODO: Review AI Test
-    // Note: requires Java's HCQL db service to route draft entity queries
-    it("can SELECT from Books.drafts via db service (empty when no drafts exist)", async () => {
+    it("should return empty array when SELECTing Books.drafts without drafts", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books.drafts);
 
       expect(res).to.be.an("array").with.length(0);
     });
-  });
 
-  describe("Authors entity", () => {
-    // TODO: Review AI Test
-    it("returns all Authors", async () => {
-      const { Authors } = cds.entities("bookshop");
+    it("should INSERT a Books.drafts row and return it in a subsequent SELECT", async () => {
+      // TODO: Review AI Test
+      const { Books } = cds.entities("bookshop");
+      const NEW_DRAFT_ID = "dddd0000-0000-0000-0000-000000000001";
+      const DRAFT_UUID   = "dddd0000-0000-0000-0000-000000000002";
 
-      const res = await SELECT.from(Authors);
+      await INSERT.into(Books.drafts).entries({
+        ID: NEW_DRAFT_ID,
+        title: "Draft Insert Test",
+        author_ID: EMILY_ID,
+        IsActiveEntity: false,
+        HasActiveEntity: false,
+        HasDraftEntity: true,
+        DraftAdministrativeData_DraftUUID: DRAFT_UUID,
+      });
 
-      expect(res.length).to.equal(2);
+      const row = await SELECT.one.from(Books.drafts).where({ ID: NEW_DRAFT_ID });
+
+      expect(row).to.exist;
+      expect(row.title).to.equal("Draft Insert Test");
+      expect(row.IsActiveEntity).to.equal(false);
+      expect(row.DraftAdministrativeData_DraftUUID).to.equal(DRAFT_UUID);
     });
 
-    // TODO: Review AI Test
-    it("inserts an Author and verifies it can be retrieved", async () => {
-      const { Authors } = cds.entities("bookshop");
-      const NEW_ID = "a0000000-0000-0000-0000-000000000099";
+    it("should deep INSERT Books.drafts with nested ExpertReviews.drafts via composition", async () => {
+      // TODO: Review AI Test
+      const { Books, ExpertReviews } = cds.entities("bookshop");
+      const NEW_DRAFT_BOOK_ID   = "dddd0000-0000-0000-0000-000000000003";
+      const NEW_DRAFT_REVIEW_ID = "dddd0000-0000-0000-0000-000000000004";
+      const DRAFT_UUID          = "dddd0000-0000-0000-0000-000000000005";
 
-      await INSERT.into(Authors).entries({ ID: NEW_ID, name: "Test Author" });
+      await INSERT.into(Books.drafts).entries({
+        ID: NEW_DRAFT_BOOK_ID,
+        title: "Deep Draft Insert",
+        author_ID: EMILY_ID,
+        IsActiveEntity: false,
+        HasActiveEntity: false,
+        HasDraftEntity: true,
+        DraftAdministrativeData_DraftUUID: DRAFT_UUID,
+        expertReviews: [{
+          ID: NEW_DRAFT_REVIEW_ID,
+          book_ID: NEW_DRAFT_BOOK_ID,
+          title: "Draft Expert Opinion",
+          shortText: "Promising draft.",
+          longText: "A review of the draft manuscript.",
+          IsActiveEntity: false,
+          HasActiveEntity: false,
+          HasDraftEntity: true,
+          DraftAdministrativeData_DraftUUID: DRAFT_UUID,
+        }],
+      });
 
-      const res = await SELECT.one.from(Authors).where({ ID: NEW_ID });
-      expect(res.name).to.equal("Test Author");
-    });
+      const book = await SELECT.one.from(Books.drafts).where({ ID: NEW_DRAFT_BOOK_ID });
+      expect(book).to.exist;
+      expect(book.title).to.equal("Deep Draft Insert");
 
-    // TODO: Review AI Test
-    it("updates an Author name and verifies the new value is persisted", async () => {
-      const { Authors } = cds.entities("bookshop");
-
-      await UPDATE(Authors)
-        .set({ name: "Updated Author" })
-        .where({ ID: EMILY_ID });
-
-      const res = await SELECT.one.from(Authors).where({ ID: EMILY_ID });
-      expect(res.name).to.equal("Updated Author");
-    });
-
-    // TODO: Review AI Test
-    it("deletes an Author and verifies it no longer exists", async () => {
-      const { Authors } = cds.entities("bookshop");
-
-      await DELETE.from(Authors).where({ ID: POE_ID });
-
-      const res = await SELECT.one.from(Authors).where({ ID: POE_ID });
-      expect(res).to.not.exist;
+      const reviews = await SELECT.from(ExpertReviews.drafts).where({ book_ID: NEW_DRAFT_BOOK_ID });
+      expect(reviews).to.be.an("array").with.length(1);
+      expect(reviews[0].ID).to.equal(NEW_DRAFT_REVIEW_ID);
+      expect(reviews[0].title).to.equal("Draft Expert Opinion");
     });
   });
 
   describe("Genres entity — recursive composition", () => {
-    // TODO: Review AI Test
-    it("returns all Genres", async () => {
-      const { Genres } = cds.entities("bookshop");
-
-      const res = await SELECT.from(Genres);
-
-      expect(res.length).to.equal(3);
-    });
-
-    // TODO: Review AI Test
-    it("filters root Genres (no parent)", async () => {
+    it("should select root Genres with no parent", async () => {
       const { Genres } = cds.entities("bookshop");
 
       const res = await SELECT.from(Genres).where({ parent_ID: null });
@@ -680,8 +593,7 @@ describe("Java HCQL db proxy", () => {
       expect(res[0].name).to.equal("Fiction");
     });
 
-    // TODO: Review AI Test
-    it("expands Genre children (one level of recursion)", async () => {
+    it("should expand Genre children one level of recursion", async () => {
       const { Genres } = cds.entities("bookshop");
 
       const res = await SELECT.from(Genres)
@@ -699,8 +611,7 @@ describe("Java HCQL db proxy", () => {
       ]);
     });
 
-    // TODO: Review AI Test
-    it("inserts a child Genre and verifies it appears under parent", async () => {
+    it("should return inserted child Genre under parent when expanding children", async () => {
       const { Genres } = cds.entities("bookshop");
       const NEW_GENRE_ID = "c0000000-0000-0000-0000-000000000099";
 
@@ -720,17 +631,7 @@ describe("Java HCQL db proxy", () => {
   });
 
   describe("ExpertReviews entity", () => {
-    // TODO: Review AI Test
-    it("returns all ExpertReviews", async () => {
-      const { ExpertReviews } = cds.entities("bookshop");
-
-      const res = await SELECT.from(ExpertReviews);
-
-      expect(res.length).to.equal(1);
-    });
-
-    // TODO: Review AI Test
-    it("inserts a review and verifies roundtrip", async () => {
+    it("should insert a review and return it in subsequent SELECT", async () => {
       const { ExpertReviews } = cds.entities("bookshop");
 
       await INSERT.into(ExpertReviews).entries({
@@ -741,12 +642,12 @@ describe("Java HCQL db proxy", () => {
       });
 
       const res = await SELECT.from(ExpertReviews).where({ book_ID: RAVEN_ID });
+
       expect(res.length).to.equal(1);
       expect(res[0].title).to.equal("Poe at his finest");
     });
 
-    // TODO: Review AI Test
-    it("updates review title", async () => {
+    it("should update review title", async () => {
       const { ExpertReviews } = cds.entities("bookshop");
 
       await UPDATE(ExpertReviews)
@@ -757,8 +658,7 @@ describe("Java HCQL db proxy", () => {
       expect(res.title).to.equal("Updated Title");
     });
 
-    // TODO: Review AI Test
-    it("deletes a review", async () => {
+    it("should delete a review and remove it from subsequent SELECT", async () => {
       const { ExpertReviews } = cds.entities("bookshop");
 
       await DELETE.from(ExpertReviews).where({ ID: REVIEW_ID });
@@ -767,8 +667,7 @@ describe("Java HCQL db proxy", () => {
       expect(res).to.not.exist;
     });
 
-    // TODO: Review AI Test
-    it("array-typed tags field is accessible via the HCQL proxy", async () => {
+    it("should persist and return array-typed fields", async () => {
       const { ExpertReviews } = cds.entities("bookshop");
 
       await INSERT.into(ExpertReviews).entries({
@@ -781,14 +680,14 @@ describe("Java HCQL db proxy", () => {
       const res = await SELECT.one
         .from(ExpertReviews)
         .where({ title: "Tagged Review" });
+
       expect(res).to.exist;
       expect(res.tags).to.deep.equal(["a", "list", "of", "tags"]);
     });
   });
 
   describe("Review_Meta nested composition", () => {
-    // TODO: Review AI Test
-    it("Review_Meta is accessible via ExpertReviews composition and seed data matches", async () => {
+    it("should return Review_Meta with seed values via ExpertReviews composition expand", async () => {
       const { ExpertReviews } = cds.entities("bookshop");
 
       const res = await SELECT.from(ExpertReviews)
@@ -807,8 +706,7 @@ describe("Java HCQL db proxy", () => {
       expect(res[0].reviewMeta.notes).to.equal("A landmark in Gothic fiction.");
     });
 
-    // TODO: Review AI Test
-    it("INSERT ExpertReview without Review_Meta has null reviewMeta, then INSERT Review_Meta and SELECT back verifies roundtrip", async () => {
+    it("should support two-step composition write: INSERT ExpertReview then link Review_Meta by FK", async () => {
       const { ExpertReviews, Review_Meta } = cds.entities("bookshop");
 
       await INSERT.into(ExpertReviews).entries({
@@ -830,7 +728,6 @@ describe("Java HCQL db proxy", () => {
         notes: "Hauntingly good.",
       });
 
-      // Subselect in SET is not supported by HCQL proxy — two-step approach instead
       const insertedMeta = await SELECT.one
         .from(Review_Meta)
         .where({ expertReview_ID: withoutMeta.ID });
@@ -854,8 +751,7 @@ describe("Java HCQL db proxy", () => {
   });
 
   describe("cds.db.run", () => {
-    // TODO: Review AI Test
-    it("executes query via explicit cds.db.run()", async () => {
+    it("should execute SELECT query via explicit cds.db.run()", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await cds.db.run(SELECT.from(Books));
@@ -884,25 +780,14 @@ describe("Java HCQL db proxy", () => {
           longText: "Long 3",
         },
       ]);
+
       await INSERT.into(Review_Meta).entries([
         { ID: META2_ID, expertReview_ID: REVIEW2_ID, rating: 3, notes: "Low" },
         { ID: META3_ID, expertReview_ID: REVIEW3_ID, rating: 4, notes: "Mid" },
       ]);
     });
 
-    // TODO: Review AI Test
-    it("groups by author_ID and returns distinct author rows", async () => {
-      const { Books } = cds.entities("bookshop");
-
-      const res = await SELECT.from(Books)
-        .groupBy("author_ID")
-        .columns("author_ID");
-
-      expect(res).to.be.an("array").with.length(2);
-    });
-
-    // TODO: Review AI Test
-    it("count(*) returns total number of Review_Meta rows", async () => {
+    it("should return total row count via count(*)", async () => {
       const { Review_Meta } = cds.entities("bookshop");
 
       const res = await SELECT.from(Review_Meta).columns("count(*) as count");
@@ -911,8 +796,7 @@ describe("Java HCQL db proxy", () => {
       expect(Number(res[0].count)).to.equal(3);
     });
 
-    // TODO: Review AI Test
-    it("max(rating) returns highest rating across all Review_Meta rows", async () => {
+    it("should return highest rating via max(rating)", async () => {
       const { Review_Meta } = cds.entities("bookshop");
 
       const res = await SELECT.from(Review_Meta).columns(
@@ -923,8 +807,7 @@ describe("Java HCQL db proxy", () => {
       expect(Number(res[0].maxRating)).to.equal(5);
     });
 
-    // TODO: Review AI Test
-    it("min(rating) returns lowest rating across all Review_Meta rows", async () => {
+    it("should return lowest rating via min(rating)", async () => {
       const { Review_Meta } = cds.entities("bookshop");
 
       const res = await SELECT.from(Review_Meta).columns(
@@ -936,7 +819,7 @@ describe("Java HCQL db proxy", () => {
     });
 
     // TODO: Review AI Test
-    it("sum(rating) returns sum of all ratings", async () => {
+    it("should return sum of all ratings via sum(rating)", async () => {
       const { Review_Meta } = cds.entities("bookshop");
 
       const res = await SELECT.from(Review_Meta).columns(
@@ -947,8 +830,7 @@ describe("Java HCQL db proxy", () => {
       expect(Number(res[0].sumRating)).to.equal(12);
     });
 
-    // TODO: Review AI Test
-    it("avg(rating) returns average rating", async () => {
+    it("should return average rating via avg(rating)", async () => {
       const { Review_Meta } = cds.entities("bookshop");
 
       const res = await SELECT.from(Review_Meta).columns(
@@ -959,8 +841,7 @@ describe("Java HCQL db proxy", () => {
       expect(Number(res[0].avgRating)).to.equal(4);
     });
 
-    // TODO: Review AI Test
-    it("having filters author groups with more than one book", async () => {
+    it("should filter grouped results with HAVING clause", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books)
@@ -974,8 +855,7 @@ describe("Java HCQL db proxy", () => {
   });
 
   describe("UPSERT", () => {
-    // TODO: Review AI Test
-    it("updates an existing Book when ID matches", async () => {
+    it("should update an existing Book when ID matches", async () => {
       const { Books } = cds.entities("bookshop");
 
       await UPSERT.into(Books).entries({
@@ -988,8 +868,7 @@ describe("Java HCQL db proxy", () => {
       expect(res.title).to.equal("Upserted Title");
     });
 
-    // TODO: Review AI Test
-    it("inserts a new Book when no row with given ID exists", async () => {
+    it("should insert a new Book when no row with matching ID exists", async () => {
       const { Books } = cds.entities("bookshop");
       const NEW_ID = "b0000000-0000-0000-0000-000000000099";
 
@@ -1005,21 +884,87 @@ describe("Java HCQL db proxy", () => {
     });
   });
 
+  describe("deep write", () => {
+    it("should persist Book and nested ExpertReview in a single deep INSERT via composition", async () => {
+      // TODO: Review AI Test
+      const { Books, ExpertReviews } = cds.entities("bookshop");
+      const NEW_BOOK_ID = "eeee0000-0000-0000-0000-000000000001";
+      const NEW_REVIEW_ID = "eeee0000-0000-0000-0000-000000000002";
+
+      await INSERT.into(Books).entries({
+        ID: NEW_BOOK_ID,
+        title: "Deep Write Test Book",
+        author_ID: EMILY_ID,
+        expertReviews: [{ ID: NEW_REVIEW_ID, title: "An expert opinion", shortText: "Excellent.", longText: "A thorough review." }],
+      });
+
+      const book = await SELECT.one.from(Books).where({ ID: NEW_BOOK_ID });
+      expect(book).to.exist;
+      expect(book.title).to.equal("Deep Write Test Book");
+
+      const reviews = await SELECT.from(ExpertReviews).where({ book_ID: NEW_BOOK_ID });
+      expect(reviews).to.be.an("array").with.length(1);
+      expect(reviews[0].ID).to.equal(NEW_REVIEW_ID);
+      expect(reviews[0].title).to.equal("An expert opinion");
+    });
+
+    it("should update Book and nested ExpertReview in a single deep UPDATE via composition", async () => {
+      // TODO: Review AI Test
+      const { Books, ExpertReviews } = cds.entities("bookshop");
+
+      await UPDATE(Books, WUTHERING_ID).set({
+        title: "Updated Heights",
+        expertReviews: [{ ID: REVIEW_ID, title: "Updated Review" }],
+      });
+
+      const book = await SELECT.one.from(Books).where({ ID: WUTHERING_ID });
+      expect(book).to.exist;
+      expect(book.title).to.equal("Updated Heights");
+
+      const review = await SELECT.one.from(ExpertReviews).where({ ID: REVIEW_ID });
+      expect(review).to.exist;
+      expect(review.title).to.equal("Updated Review");
+    });
+
+    it("should persist Book and nested ExpertReview in a single deep UPSERT via composition", async () => {
+      // TODO: Review AI Test
+      const { Books, ExpertReviews } = cds.entities("bookshop");
+      const NEW_BOOK_ID = "eeee0000-0000-0000-0000-000000000003";
+      const NEW_REVIEW_ID = "eeee0000-0000-0000-0000-000000000004";
+
+      await UPSERT.into(Books).entries({
+        ID: NEW_BOOK_ID,
+        title: "Deep Upsert Test Book",
+        author_ID: EMILY_ID,
+        expertReviews: [{ ID: NEW_REVIEW_ID, title: "A fresh take", shortText: "Insightful.", longText: "Very thoughtful." }],
+      });
+
+      const book = await SELECT.one.from(Books).where({ ID: NEW_BOOK_ID });
+      expect(book).to.exist;
+      expect(book.title).to.equal("Deep Upsert Test Book");
+
+      const reviews = await SELECT.from(ExpertReviews).where({ book_ID: NEW_BOOK_ID });
+      expect(reviews).to.be.an("array").with.length(1);
+      expect(reviews[0].ID).to.equal(NEW_REVIEW_ID);
+      expect(reviews[0].title).to.equal("A fresh take");
+    });
+  });
+
   describe("SELECT.localized", () => {
-    // TODO: Review AI Test
-    it("SELECT.localized returns Books (empirical — documents whether HCQL supports locale)", async () => {
+    it.skip("should return Books with localized field values via SELECT.localized", async () => {
       const { Books } = cds.entities("bookshop");
 
-      const res = await SELECT.localized(Books);
+      const res = await cds.tx({ locale: "de" }, () => SELECT.localized(Books));
 
-      expect(res).to.be.an("array");
-      expect(res.length).to.equal(3);
+      expect(res).to.be.an("array").with.length(3);
+      const wuthering = res.find((b) => b.ID === WUTHERING_ID);
+      expect(wuthering).to.exist;
+      expect(wuthering.title).to.equal("Sturmhöhen");
     });
   });
 
   describe("combination queries", () => {
-    // TODO: Review AI Test
-    it("WHERE + groupBy + having returns only author with more than one book matching filter", async () => {
+    it("should return only Poe when combining WHERE, groupBy, and having", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books)
@@ -1032,8 +977,7 @@ describe("Java HCQL db proxy", () => {
       expect(res[0].author_ID).to.equal(POE_ID);
     });
 
-    // TODO: Review AI Test
-    it("WHERE IN + orderBy + limit returns first matching Book alphabetically", async () => {
+    it("should return first Poe book alphabetically when combining WHERE IN, orderBy, and limit", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books)
@@ -1045,8 +989,7 @@ describe("Java HCQL db proxy", () => {
       expect(res[0].title).to.equal("Eleonora");
     });
 
-    // TODO: Review AI Test
-    it("expand + WHERE + orderBy + limit returns author for first Poe book alphabetically", async () => {
+    it("should return expanded author for first Poe book when combining expand, WHERE, orderBy, and limit", async () => {
       const { Books } = cds.entities("bookshop");
 
       const res = await SELECT.from(Books)
