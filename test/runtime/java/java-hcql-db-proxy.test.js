@@ -456,6 +456,15 @@ describe("Java HCQL db proxy", () => {
       const res = await SELECT.one.from(Books).where({ ID: RAVEN_ID })
       expect(res.title).to.equal('With Updated')
     })
+
+    it("should clear a nullable field when set to null", async () => {
+      const { Books } = cds.entities('bookshop')
+
+      await UPDATE(Books).set({ genre_ID: null }).where({ ID: WUTHERING_ID })
+
+      const res = await SELECT.one.from(Books).where({ ID: WUTHERING_ID })
+      expect(res.genre_ID).to.not.exist
+    })
   })
 
   describe("DELETE", () => {
