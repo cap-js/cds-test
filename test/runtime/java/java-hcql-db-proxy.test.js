@@ -303,63 +303,63 @@ describe("Java HCQL db proxy", () => {
 
   describe("WHERE comparison operators", () => {
     beforeEach(async () => {
-      const { ExpertReviews, ReviewMeta } = cds.entities('bookshop')
+      const { ExpertReviews, Review_Meta } = cds.entities('bookshop')
 
       await INSERT.into(ExpertReviews).entries([
         { ID: REVIEW2_ID, book_ID: RAVEN_ID,    title: 'Review 2', shortText: 'Short 2', longText: 'Long 2' },
         { ID: REVIEW3_ID, book_ID: ELEONORA_ID, title: 'Review 3', shortText: 'Short 3', longText: 'Long 3' },
       ])
-      await INSERT.into(ReviewMeta).entries([
+      await INSERT.into(Review_Meta).entries([
         { ID: META2_ID, expertReview_ID: REVIEW2_ID, rating: 3, notes: 'Low' },
         { ID: META3_ID, expertReview_ID: REVIEW3_ID, rating: 4, notes: 'Mid' },
       ])
     })
 
     // TODO: Review AI Test
-    it("greater-than returns ReviewMeta with rating > 3", async () => {
-      const { ReviewMeta } = cds.entities('bookshop')
+    it("greater-than returns Review_Meta with rating > 3", async () => {
+      const { Review_Meta } = cds.entities('bookshop')
 
-      const res = await SELECT.from(ReviewMeta).where('rating >', 3)
-
-      expect(res.length).to.equal(2)
-      expect(res.map(r => r.rating).sort()).to.deep.equal([4, 5])
-    })
-
-    // TODO: Review AI Test
-    it("less-than returns ReviewMeta with rating < 5", async () => {
-      const { ReviewMeta } = cds.entities('bookshop')
-
-      const res = await SELECT.from(ReviewMeta).where('rating <', 5)
-
-      expect(res.length).to.equal(2)
-      expect(res.map(r => r.rating).sort()).to.deep.equal([3, 4])
-    })
-
-    // TODO: Review AI Test
-    it("greater-than-or-equal returns ReviewMeta with rating >= 4", async () => {
-      const { ReviewMeta } = cds.entities('bookshop')
-
-      const res = await SELECT.from(ReviewMeta).where('rating >=', 4)
+      const res = await SELECT.from(Review_Meta).where('rating >', 3)
 
       expect(res.length).to.equal(2)
       expect(res.map(r => r.rating).sort()).to.deep.equal([4, 5])
     })
 
     // TODO: Review AI Test
-    it("less-than-or-equal returns ReviewMeta with rating <= 4", async () => {
-      const { ReviewMeta } = cds.entities('bookshop')
+    it("less-than returns Review_Meta with rating < 5", async () => {
+      const { Review_Meta } = cds.entities('bookshop')
 
-      const res = await SELECT.from(ReviewMeta).where('rating <=', 4)
+      const res = await SELECT.from(Review_Meta).where('rating <', 5)
 
       expect(res.length).to.equal(2)
       expect(res.map(r => r.rating).sort()).to.deep.equal([3, 4])
     })
 
     // TODO: Review AI Test
-    it("between returns ReviewMeta with rating between 3 and 4", async () => {
-      const { ReviewMeta } = cds.entities('bookshop')
+    it("greater-than-or-equal returns Review_Meta with rating >= 4", async () => {
+      const { Review_Meta } = cds.entities('bookshop')
 
-      const res = await SELECT.from(ReviewMeta).where('rating between', 3, 'and', 4)
+      const res = await SELECT.from(Review_Meta).where('rating >=', 4)
+
+      expect(res.length).to.equal(2)
+      expect(res.map(r => r.rating).sort()).to.deep.equal([4, 5])
+    })
+
+    // TODO: Review AI Test
+    it("less-than-or-equal returns Review_Meta with rating <= 4", async () => {
+      const { Review_Meta } = cds.entities('bookshop')
+
+      const res = await SELECT.from(Review_Meta).where('rating <=', 4)
+
+      expect(res.length).to.equal(2)
+      expect(res.map(r => r.rating).sort()).to.deep.equal([3, 4])
+    })
+
+    // TODO: Review AI Test
+    it("between returns Review_Meta with rating between 3 and 4", async () => {
+      const { Review_Meta } = cds.entities('bookshop')
+
+      const res = await SELECT.from(Review_Meta).where('rating between', 3, 'and', 4)
 
       expect(res.length).to.equal(2)
       expect(res.map(r => r.rating).sort()).to.deep.equal([3, 4])
@@ -691,9 +691,9 @@ describe("Java HCQL db proxy", () => {
     })
   })
 
-  describe("ReviewMeta nested composition", () => {
+  describe("Review_Meta nested composition", () => {
     // TODO: Review AI Test
-    it("ReviewMeta is accessible via ExpertReviews composition and seed data matches", async () => {
+    it("Review_Meta is accessible via ExpertReviews composition and seed data matches", async () => {
       const { ExpertReviews } = cds.entities('bookshop')
 
       const res = await SELECT.from(ExpertReviews)
@@ -708,8 +708,8 @@ describe("Java HCQL db proxy", () => {
     })
 
     // TODO: Review AI Test
-    it("INSERT ExpertReview without ReviewMeta has null reviewMeta, then INSERT ReviewMeta and SELECT back verifies roundtrip", async () => {
-      const { ExpertReviews, ReviewMeta } = cds.entities('bookshop')
+    it("INSERT ExpertReview without Review_Meta has null reviewMeta, then INSERT Review_Meta and SELECT back verifies roundtrip", async () => {
+      const { ExpertReviews, Review_Meta } = cds.entities('bookshop')
 
       await INSERT.into(ExpertReviews).entries({
         book_ID: RAVEN_ID,
@@ -722,14 +722,14 @@ describe("Java HCQL db proxy", () => {
       expect(withoutMeta).to.exist
       expect(withoutMeta.reviewMeta_ID).to.not.exist
 
-      await INSERT.into(ReviewMeta).entries({
+      await INSERT.into(Review_Meta).entries({
         expertReview_ID: withoutMeta.ID,
         rating: 4,
         notes: 'Hauntingly good.',
       })
 
       // Subselect in SET is not supported by HCQL proxy — two-step approach instead
-      const insertedMeta = await SELECT.one.from(ReviewMeta).where({ expertReview_ID: withoutMeta.ID })
+      const insertedMeta = await SELECT.one.from(Review_Meta).where({ expertReview_ID: withoutMeta.ID })
       await UPDATE(ExpertReviews, withoutMeta.ID).set({ reviewMeta_ID: insertedMeta.ID })
 
       const withMeta = await SELECT.one.from(ExpertReviews)
@@ -754,13 +754,13 @@ describe("Java HCQL db proxy", () => {
 
   describe("aggregate queries", () => {
     beforeEach(async () => {
-      const { ExpertReviews, ReviewMeta } = cds.entities('bookshop')
+      const { ExpertReviews, Review_Meta } = cds.entities('bookshop')
 
       await INSERT.into(ExpertReviews).entries([
         { ID: REVIEW2_ID, book_ID: RAVEN_ID,    title: 'Review 2', shortText: 'Short 2', longText: 'Long 2' },
         { ID: REVIEW3_ID, book_ID: ELEONORA_ID, title: 'Review 3', shortText: 'Short 3', longText: 'Long 3' },
       ])
-      await INSERT.into(ReviewMeta).entries([
+      await INSERT.into(Review_Meta).entries([
         { ID: META2_ID, expertReview_ID: REVIEW2_ID, rating: 3, notes: 'Low' },
         { ID: META3_ID, expertReview_ID: REVIEW3_ID, rating: 4, notes: 'Mid' },
       ])
@@ -776,30 +776,30 @@ describe("Java HCQL db proxy", () => {
     })
 
     // TODO: Review AI Test
-    it("count(*) returns total number of ReviewMeta rows", async () => {
-      const { ReviewMeta } = cds.entities('bookshop')
+    it("count(*) returns total number of Review_Meta rows", async () => {
+      const { Review_Meta } = cds.entities('bookshop')
 
-      const res = await SELECT.from(ReviewMeta).columns('count(*) as count')
+      const res = await SELECT.from(Review_Meta).columns('count(*) as count')
 
       expect(res.length).to.equal(1)
       expect(Number(res[0].count)).to.equal(3)
     })
 
     // TODO: Review AI Test
-    it("max(rating) returns highest rating across all ReviewMeta rows", async () => {
-      const { ReviewMeta } = cds.entities('bookshop')
+    it("max(rating) returns highest rating across all Review_Meta rows", async () => {
+      const { Review_Meta } = cds.entities('bookshop')
 
-      const res = await SELECT.from(ReviewMeta).columns('max(rating) as maxRating')
+      const res = await SELECT.from(Review_Meta).columns('max(rating) as maxRating')
 
       expect(res.length).to.equal(1)
       expect(Number(res[0].maxRating)).to.equal(5)
     })
 
     // TODO: Review AI Test
-    it("min(rating) returns lowest rating across all ReviewMeta rows", async () => {
-      const { ReviewMeta } = cds.entities('bookshop')
+    it("min(rating) returns lowest rating across all Review_Meta rows", async () => {
+      const { Review_Meta } = cds.entities('bookshop')
 
-      const res = await SELECT.from(ReviewMeta).columns('min(rating) as minRating')
+      const res = await SELECT.from(Review_Meta).columns('min(rating) as minRating')
 
       expect(res.length).to.equal(1)
       expect(Number(res[0].minRating)).to.equal(3)
@@ -807,9 +807,9 @@ describe("Java HCQL db proxy", () => {
 
     // TODO: Review AI Test
     it("sum(rating) returns sum of all ratings", async () => {
-      const { ReviewMeta } = cds.entities('bookshop')
+      const { Review_Meta } = cds.entities('bookshop')
 
-      const res = await SELECT.from(ReviewMeta).columns('sum(rating) as sumRating')
+      const res = await SELECT.from(Review_Meta).columns('sum(rating) as sumRating')
 
       expect(res.length).to.equal(1)
       expect(Number(res[0].sumRating)).to.equal(12)
@@ -817,9 +817,9 @@ describe("Java HCQL db proxy", () => {
 
     // TODO: Review AI Test
     it("avg(rating) returns average rating", async () => {
-      const { ReviewMeta } = cds.entities('bookshop')
+      const { Review_Meta } = cds.entities('bookshop')
 
-      const res = await SELECT.from(ReviewMeta).columns('avg(rating) as avgRating')
+      const res = await SELECT.from(Review_Meta).columns('avg(rating) as avgRating')
 
       expect(res.length).to.equal(1)
       expect(Number(res[0].avgRating)).to.equal(4)

@@ -29,10 +29,10 @@ entity ExpertReviews {
       shortText   : String(140);
       longText    : String;
       tags        : many String;
-      reviewMeta  : Composition of one ReviewMeta;
+      reviewMeta  : Composition of one Review_Meta;
 }
 
-entity ReviewMeta {
+entity Review_Meta {
   key ID               : UUID;
       expertReview     : Association to one ExpertReviews;
       rating           : Integer;
