@@ -687,7 +687,7 @@ describe("Java HCQL db proxy", () => {
 
       const res = await SELECT.one.from(ExpertReviews).where({ title: 'Tagged Review' })
       expect(res).to.exist
-      expect(res).to.deep.equal(['a', 'list', 'of', 'tags'])
+      expect(res.tags).to.deep.equal(['a', 'list', 'of', 'tags'])
     })
   })
 
