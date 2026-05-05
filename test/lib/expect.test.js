@@ -120,6 +120,14 @@ describe (`supported chai features subset ...`, ()=>{
     expect(a).to.not.have.an.own.property('b')
   })
 
+  it ('not.to.have.property passes when property is absent', () => {
+    expect({ a: 1 }).not.to.have.property('b')
+  })
+
+  it ('not.to.have.property throws when property is present', () => {
+    expect(() => expect({ a: 1 }).not.to.have.property('a')).throws()
+  })
+
   it (`supports .nested.property`, ()=>{
     // expect({a:{b:['x', 'y']}}).to.have.nested.property('a.b[1]')
     expect({a:{b:['x', 'y']}}).to.have.nested.property('a.b.1')
