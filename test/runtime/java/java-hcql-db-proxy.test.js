@@ -611,34 +611,58 @@ describe("Java HCQL db proxy", () => {
       expect(res.author.name).to.equal("Edgar Allan Poe");
     });
 
-    it("should navigate genre association from Books.drafts to Genres (non-draft target)", async () => {
-      // TODO: I think this duplicated the test above, how is it different?
-      const { Books } = cds.entities("bookshop");
+    it("should expand draft composition from Books.drafts to multiple ExpertReviews.drafts entries", async () => {
+      const { Books, ExpertReviews } = cds.entities("bookshop");
 
-      const NEW_DRAFT_ID = "dddd0000-0000-0000-0000-000000000012";
-      const DRAFT_UUID   = "dddd0000-0000-0000-0000-000000000013";
+      const DRAFT_BOOK_ID    = "dddd0000-0000-0000-0000-000000000030";
+      const DRAFT_UUID       = "dddd0000-0000-0000-0000-000000000031";
+      const DRAFT_REVIEW_1_ID = "dddd0000-0000-0000-0000-000000000032";
+      const DRAFT_REVIEW_2_ID = "dddd0000-0000-0000-0000-000000000033";
 
       await INSERT.into(Books.drafts).entries({
-        ID: NEW_DRAFT_ID,
-        title: "Genre Navigation Test",
-        genre_ID: FICTION_ID,
+        ID: DRAFT_BOOK_ID,
+        title: "Multi-Review Draft Book",
         IsActiveEntity: false,
         HasActiveEntity: false,
         HasDraftEntity: true,
         DraftAdministrativeData_DraftUUID: DRAFT_UUID,
       });
 
+      await INSERT.into(ExpertReviews.drafts).entries([
+        {
+          ID: DRAFT_REVIEW_1_ID,
+          title: "First Draft Review",
+          book_ID: DRAFT_BOOK_ID,
+          IsActiveEntity: false,
+          HasActiveEntity: false,
+          HasDraftEntity: true,
+          DraftAdministrativeData_DraftUUID: DRAFT_UUID,
+        },
+        {
+          ID: DRAFT_REVIEW_2_ID,
+          title: "Second Draft Review",
+          book_ID: DRAFT_BOOK_ID,
+          IsActiveEntity: false,
+          HasActiveEntity: false,
+          HasDraftEntity: true,
+          DraftAdministrativeData_DraftUUID: DRAFT_UUID,
+        },
+      ]);
+
       const res = await SELECT.one
         .from(Books.drafts)
-        .where({ ID: NEW_DRAFT_ID })
+        .where({ ID: DRAFT_BOOK_ID })
         .columns((b) => {
-          (b.title, b.genre((g) => g.name));
+          (b.title, b.expertReviews((r) => r.title));
         });
 
       expect(res).to.exist;
-      expect(res.title).to.equal("Genre Navigation Test");
-      expect(res.genre).to.exist;
-      expect(res.genre.name).to.equal("Fiction");
+      expect(res.title).to.equal("Multi-Review Draft Book");
+      expect(res.expertReviews).to.be.an("array").with.length(2);
+      expect(res.expertReviews.map((r) => r.title).sort()).to.deep.equal([
+        "First Draft Review",
+        "Second Draft Review",
+      ]);
     });
   });
 
@@ -647,19 +671,16 @@ describe("Java HCQL db proxy", () => {
       const { Books, ExpertReviews } = cds.entities("bookshop");
 
       const DRAFT_BOOK_ID     = "dddd0000-0000-0000-0000-000000000020";
-      const DRAFT_BOOK_UUID   = "dddd0000-0000-0000-0000-000000000021";
       const DRAFT_REVIEW_ID   = "dddd0000-0000-0000-0000-000000000022";
-      const DRAFT_REVIEW_UUID = "dddd0000-0000-0000-0000-000000000023";
+      const SHARED_DRAFT_UUID = "dddd0000-0000-0000-0000-000000000021";
 
-      // TODO: With expert review a child of book, they MUST share the same draft uuid
-      // TODO: Do we navigating to a composed entity collection with multiple elements somewhere?
       await INSERT.into(Books.drafts).entries({
         ID: DRAFT_BOOK_ID,
         title: "Draft Book for Review Nav",
         IsActiveEntity: false,
         HasActiveEntity: false,
         HasDraftEntity: true,
-        DraftAdministrativeData_DraftUUID: DRAFT_BOOK_UUID,
+        DraftAdministrativeData_DraftUUID: SHARED_DRAFT_UUID,
       });
 
       await INSERT.into(ExpertReviews.drafts).entries({
@@ -669,7 +690,7 @@ describe("Java HCQL db proxy", () => {
         IsActiveEntity: false,
         HasActiveEntity: false,
         HasDraftEntity: true,
-        DraftAdministrativeData_DraftUUID: DRAFT_REVIEW_UUID,
+        DraftAdministrativeData_DraftUUID: SHARED_DRAFT_UUID,
       });
 
       const res = await SELECT.one
@@ -726,6 +747,31 @@ describe("Java HCQL db proxy", () => {
       expect(res.reviewMeta).to.exist;
       expect(res.reviewMeta.rating).to.equal(4);
       expect(res.reviewMeta.notes).to.equal("Draft review note");
+    });
+
+    it("should persist and return array-typed tags field in ExpertReviews.drafts", async () => {
+      const { ExpertReviews } = cds.entities("bookshop");
+      
+      const DRAFT_REVIEW_ID = "dddd0000-0000-0000-0000-000000000026";
+      const DRAFT_UUID      = "dddd0000-0000-0000-0000-000000000027";
+
+      await INSERT.into(ExpertReviews.drafts).entries({
+        ID: DRAFT_REVIEW_ID,
+        title: "Tagged Draft Review",
+        tags: ["draft", "tagged", "review"],
+        IsActiveEntity: false,
+        HasActiveEntity: false,
+        HasDraftEntity: true,
+        DraftAdministrativeData_DraftUUID: DRAFT_UUID,
+      });
+
+      const res = await SELECT.one
+        .from(ExpertReviews.drafts)
+        .where({ ID: DRAFT_REVIEW_ID });
+
+      expect(res).to.exist;
+      expect(res.title).to.equal("Tagged Draft Review");
+      expect(res.tags).to.deep.equal(["draft", "tagged", "review"]);
     });
   });
 
