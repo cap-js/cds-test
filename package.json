@@ -37,8 +37,5 @@
     "@sap/cds": ">=9.8",
     "chai-as-promised": "^8",
     "chai": "^6"
-  },
-  "devDependencies": {
-    "@cap-js/sqlite": "^2"
   }
 }
