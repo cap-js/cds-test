@@ -581,6 +581,195 @@ describe("Java HCQL db proxy", () => {
       expect(reviews[0].ID).to.equal(NEW_DRAFT_REVIEW_ID);
       expect(reviews[0].title).to.equal("Draft Expert Opinion");
     });
+
+    it("should navigate author association from Books.drafts to Authors", async () => {
+      const { Books } = cds.entities("bookshop");
+
+      const NEW_DRAFT_ID = "dddd0000-0000-0000-0000-000000000010";
+      const DRAFT_UUID   = "dddd0000-0000-0000-0000-000000000011";
+
+      await INSERT.into(Books.drafts).entries({
+        ID: NEW_DRAFT_ID,
+        title: "Association Navigation Test",
+        author_ID: POE_ID,
+        IsActiveEntity: false,
+        HasActiveEntity: false,
+        HasDraftEntity: true,
+        DraftAdministrativeData_DraftUUID: DRAFT_UUID,
+      });
+
+      const res = await SELECT.one
+        .from(Books.drafts)
+        .where({ ID: NEW_DRAFT_ID })
+        .columns((b) => {
+          (b.title, b.author((a) => a.name));
+        });
+
+      expect(res).to.exist;
+      expect(res.title).to.equal("Association Navigation Test");
+      expect(res.author).to.exist;
+      expect(res.author.name).to.equal("Edgar Allan Poe");
+    });
+
+    it("should navigate genre association from Books.drafts to Genres (non-draft target)", async () => {
+      // TODO: I think this duplicated the test above, how is it different?
+      const { Books } = cds.entities("bookshop");
+
+      const NEW_DRAFT_ID = "dddd0000-0000-0000-0000-000000000012";
+      const DRAFT_UUID   = "dddd0000-0000-0000-0000-000000000013";
+
+      await INSERT.into(Books.drafts).entries({
+        ID: NEW_DRAFT_ID,
+        title: "Genre Navigation Test",
+        genre_ID: FICTION_ID,
+        IsActiveEntity: false,
+        HasActiveEntity: false,
+        HasDraftEntity: true,
+        DraftAdministrativeData_DraftUUID: DRAFT_UUID,
+      });
+
+      const res = await SELECT.one
+        .from(Books.drafts)
+        .where({ ID: NEW_DRAFT_ID })
+        .columns((b) => {
+          (b.title, b.genre((g) => g.name));
+        });
+
+      expect(res).to.exist;
+      expect(res.title).to.equal("Genre Navigation Test");
+      expect(res.genre).to.exist;
+      expect(res.genre.name).to.equal("Fiction");
+    });
+  });
+
+  describe("ExpertReviews.drafts — association and composition navigation", () => {
+    it("should navigate book association from ExpertReviews.drafts to Books.drafts", async () => {
+      const { Books, ExpertReviews } = cds.entities("bookshop");
+
+      const DRAFT_BOOK_ID     = "dddd0000-0000-0000-0000-000000000020";
+      const DRAFT_BOOK_UUID   = "dddd0000-0000-0000-0000-000000000021";
+      const DRAFT_REVIEW_ID   = "dddd0000-0000-0000-0000-000000000022";
+      const DRAFT_REVIEW_UUID = "dddd0000-0000-0000-0000-000000000023";
+
+      // TODO: With expert review a child of book, they MUST share the same draft uuid
+      // TODO: Do we navigating to a composed entity collection with multiple elements somewhere?
+      await INSERT.into(Books.drafts).entries({
+        ID: DRAFT_BOOK_ID,
+        title: "Draft Book for Review Nav",
+        IsActiveEntity: false,
+        HasActiveEntity: false,
+        HasDraftEntity: true,
+        DraftAdministrativeData_DraftUUID: DRAFT_BOOK_UUID,
+      });
+
+      await INSERT.into(ExpertReviews.drafts).entries({
+        ID: DRAFT_REVIEW_ID,
+        title: "Draft Expert Review Nav",
+        book_ID: DRAFT_BOOK_ID,
+        IsActiveEntity: false,
+        HasActiveEntity: false,
+        HasDraftEntity: true,
+        DraftAdministrativeData_DraftUUID: DRAFT_REVIEW_UUID,
+      });
+
+      const res = await SELECT.one
+        .from(ExpertReviews.drafts)
+        .where({ ID: DRAFT_REVIEW_ID })
+        .columns((r) => {
+          (r.title, r.book((b) => b.title));
+        });
+
+      expect(res).to.exist;
+      expect(res.title).to.equal("Draft Expert Review Nav");
+      expect(res.book).to.exist;
+      expect(res.book.title).to.equal("Draft Book for Review Nav");
+    });
+
+    it("should expand reviewMeta composition from ExpertReviews.drafts to Review_Meta.drafts", async () => {
+      const { ExpertReviews, Review_Meta } = cds.entities("bookshop");
+
+      const DRAFT_REVIEW_ID   = "dddd0000-0000-0000-0000-000000000022";
+      const DRAFT_REVIEW_UUID = "dddd0000-0000-0000-0000-000000000023";
+      const DRAFT_META_ID   = "dddd0000-0000-0000-0000-000000000024";
+      const DRAFT_META_UUID = "dddd0000-0000-0000-0000-000000000025";
+
+      await INSERT.into(Review_Meta.drafts).entries({
+        ID: DRAFT_META_ID,
+        expertReview_ID: DRAFT_REVIEW_ID,
+        rating: 4,
+        notes: "Draft review note",
+        IsActiveEntity: false,
+        HasActiveEntity: false,
+        HasDraftEntity: true,
+        DraftAdministrativeData_DraftUUID: DRAFT_META_UUID,
+      });
+
+      await INSERT.into(ExpertReviews.drafts).entries({
+        ID: DRAFT_REVIEW_ID,
+        title: "Draft Expert Review Meta Nav",
+        reviewMeta_ID: DRAFT_META_ID,
+        IsActiveEntity: false,
+        HasActiveEntity: false,
+        HasDraftEntity: true,
+        DraftAdministrativeData_DraftUUID: DRAFT_REVIEW_UUID,
+      });
+
+      const res = await SELECT.one
+        .from(ExpertReviews.drafts)
+        .where({ ID: DRAFT_REVIEW_ID })
+        .columns((r) => {
+          (r.title, r.reviewMeta((m) => (m.rating, m.notes)));
+        });
+
+      expect(res).to.exist;
+      expect(res.title).to.equal("Draft Expert Review Meta Nav");
+      expect(res.reviewMeta).to.exist;
+      expect(res.reviewMeta.rating).to.equal(4);
+      expect(res.reviewMeta.notes).to.equal("Draft review note");
+    });
+  });
+
+  describe("Review_Meta.drafts — association navigation", () => {
+    it("should navigate expertReview back-link from Review_Meta.drafts to ExpertReviews.drafts", async () => {
+      const { ExpertReviews, Review_Meta } = cds.entities("bookshop");
+      
+      const DRAFT_REVIEW_ID   = "dddd0000-0000-0000-0000-000000000022";
+      const DRAFT_REVIEW_UUID = "dddd0000-0000-0000-0000-000000000023";
+      const DRAFT_META_ID   = "dddd0000-0000-0000-0000-000000000024";
+      const DRAFT_META_UUID = "dddd0000-0000-0000-0000-000000000025";
+
+      await INSERT.into(ExpertReviews.drafts).entries({
+        ID: DRAFT_REVIEW_ID,
+        title: "Draft Review for Meta Nav",
+        IsActiveEntity: false,
+        HasActiveEntity: false,
+        HasDraftEntity: true,
+        DraftAdministrativeData_DraftUUID: DRAFT_REVIEW_UUID,
+      });
+
+      await INSERT.into(Review_Meta.drafts).entries({
+        ID: DRAFT_META_ID,
+        expertReview_ID: DRAFT_REVIEW_ID,
+        rating: 3,
+        notes: "Back-link test",
+        IsActiveEntity: false,
+        HasActiveEntity: false,
+        HasDraftEntity: true,
+        DraftAdministrativeData_DraftUUID: DRAFT_META_UUID,
+      });
+
+      const res = await SELECT.one
+        .from(Review_Meta.drafts)
+        .where({ ID: DRAFT_META_ID })
+        .columns((m) => {
+          (m.rating, m.expertReview((r) => r.title));
+        });
+
+      expect(res).to.exist;
+      expect(res.rating).to.equal(3);
+      expect(res.expertReview).to.exist;
+      expect(res.expertReview.title).to.equal("Draft Review for Meta Nav");
+    });
   });
 
   describe("Genres entity — recursive composition", () => {
