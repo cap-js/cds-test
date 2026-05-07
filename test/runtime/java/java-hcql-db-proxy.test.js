@@ -402,7 +402,6 @@ describe("Java HCQL db proxy", () => {
       const ID_A = "e0000000-0000-0000-0000-000000000002";
       const ID_B = "e0000000-0000-0000-0000-000000000003";
 
-      // TODO: Testing Insert, we must make sure it does not fail quietly
       await INSERT.into(Books)
         .columns("ID", "title", "author_ID", "genre_ID")
         .rows([
@@ -518,10 +517,10 @@ describe("Java HCQL db proxy", () => {
     });
 
     it("should INSERT a Books.drafts row and return it in a subsequent SELECT", async () => {
-      // TODO: Review AI Test
       const { Books } = cds.entities("bookshop");
+
       const NEW_DRAFT_ID = "dddd0000-0000-0000-0000-000000000001";
-      const DRAFT_UUID   = "dddd0000-0000-0000-0000-000000000002";
+      const DRAFT_UUID = "dddd0000-0000-0000-0000-000000000002";
 
       await INSERT.into(Books.drafts).entries({
         ID: NEW_DRAFT_ID,
@@ -533,7 +532,9 @@ describe("Java HCQL db proxy", () => {
         DraftAdministrativeData_DraftUUID: DRAFT_UUID,
       });
 
-      const row = await SELECT.one.from(Books.drafts).where({ ID: NEW_DRAFT_ID });
+      const row = await SELECT.one
+        .from(Books.drafts)
+        .where({ ID: NEW_DRAFT_ID });
 
       expect(row).to.exist;
       expect(row.title).to.equal("Draft Insert Test");
@@ -542,38 +543,44 @@ describe("Java HCQL db proxy", () => {
     });
 
     it("should deep INSERT Books.drafts with nested ExpertReviews.drafts via composition", async () => {
-      // TODO: Review AI Test
       const { Books, ExpertReviews } = cds.entities("bookshop");
-      const NEW_DRAFT_BOOK_ID   = "dddd0000-0000-0000-0000-000000000003";
+
+      const NEW_DRAFT_BOOK_ID = "dddd0000-0000-0000-0000-000000000003";
       const NEW_DRAFT_REVIEW_ID = "dddd0000-0000-0000-0000-000000000004";
-      const DRAFT_UUID          = "dddd0000-0000-0000-0000-000000000005";
+      const DRAFT_UUID = "dddd0000-0000-0000-0000-000000000005";
 
       await INSERT.into(Books.drafts).entries({
         ID: NEW_DRAFT_BOOK_ID,
         title: "Deep Draft Insert",
         author_ID: EMILY_ID,
+        expertReviews: [
+          {
+            ID: NEW_DRAFT_REVIEW_ID,
+            book_ID: NEW_DRAFT_BOOK_ID,
+            title: "Draft Expert Opinion",
+            shortText: "Promising draft.",
+            longText: "A review of the draft manuscript.",
+            IsActiveEntity: false,
+            HasActiveEntity: false,
+            HasDraftEntity: true,
+            DraftAdministrativeData_DraftUUID: DRAFT_UUID,
+          },
+        ],
         IsActiveEntity: false,
         HasActiveEntity: false,
         HasDraftEntity: true,
         DraftAdministrativeData_DraftUUID: DRAFT_UUID,
-        expertReviews: [{
-          ID: NEW_DRAFT_REVIEW_ID,
-          book_ID: NEW_DRAFT_BOOK_ID,
-          title: "Draft Expert Opinion",
-          shortText: "Promising draft.",
-          longText: "A review of the draft manuscript.",
-          IsActiveEntity: false,
-          HasActiveEntity: false,
-          HasDraftEntity: true,
-          DraftAdministrativeData_DraftUUID: DRAFT_UUID,
-        }],
       });
 
-      const book = await SELECT.one.from(Books.drafts).where({ ID: NEW_DRAFT_BOOK_ID });
+      const book = await SELECT.one
+        .from(Books.drafts)
+        .where({ ID: NEW_DRAFT_BOOK_ID });
       expect(book).to.exist;
       expect(book.title).to.equal("Deep Draft Insert");
 
-      const reviews = await SELECT.from(ExpertReviews.drafts).where({ book_ID: NEW_DRAFT_BOOK_ID });
+      const reviews = await SELECT.from(ExpertReviews.drafts).where({
+        book_ID: NEW_DRAFT_BOOK_ID,
+      });
       expect(reviews).to.be.an("array").with.length(1);
       expect(reviews[0].ID).to.equal(NEW_DRAFT_REVIEW_ID);
       expect(reviews[0].title).to.equal("Draft Expert Opinion");
@@ -583,7 +590,7 @@ describe("Java HCQL db proxy", () => {
       const { Books } = cds.entities("bookshop");
 
       const NEW_DRAFT_ID = "dddd0000-0000-0000-0000-000000000010";
-      const DRAFT_UUID   = "dddd0000-0000-0000-0000-000000000011";
+      const DRAFT_UUID = "dddd0000-0000-0000-0000-000000000011";
 
       await INSERT.into(Books.drafts).entries({
         ID: NEW_DRAFT_ID,
@@ -611,8 +618,8 @@ describe("Java HCQL db proxy", () => {
     it("should expand draft composition from Books.drafts to multiple ExpertReviews.drafts entries", async () => {
       const { Books, ExpertReviews } = cds.entities("bookshop");
 
-      const DRAFT_BOOK_ID    = "dddd0000-0000-0000-0000-000000000030";
-      const DRAFT_UUID       = "dddd0000-0000-0000-0000-000000000031";
+      const DRAFT_BOOK_ID = "dddd0000-0000-0000-0000-000000000030";
+      const DRAFT_UUID = "dddd0000-0000-0000-0000-000000000031";
       const DRAFT_REVIEW_1_ID = "dddd0000-0000-0000-0000-000000000032";
       const DRAFT_REVIEW_2_ID = "dddd0000-0000-0000-0000-000000000033";
 
@@ -667,8 +674,8 @@ describe("Java HCQL db proxy", () => {
     it("should navigate book association from ExpertReviews.drafts to Books.drafts", async () => {
       const { Books, ExpertReviews } = cds.entities("bookshop");
 
-      const DRAFT_BOOK_ID     = "dddd0000-0000-0000-0000-000000000020";
-      const DRAFT_REVIEW_ID   = "dddd0000-0000-0000-0000-000000000022";
+      const DRAFT_BOOK_ID = "dddd0000-0000-0000-0000-000000000020";
+      const DRAFT_REVIEW_ID = "dddd0000-0000-0000-0000-000000000022";
       const SHARED_DRAFT_UUID = "dddd0000-0000-0000-0000-000000000021";
 
       await INSERT.into(Books.drafts).entries({
@@ -706,9 +713,9 @@ describe("Java HCQL db proxy", () => {
     it("should expand reviewMeta composition from ExpertReviews.drafts to Review_Meta.drafts", async () => {
       const { ExpertReviews, Review_Meta } = cds.entities("bookshop");
 
-      const DRAFT_REVIEW_ID   = "dddd0000-0000-0000-0000-000000000022";
+      const DRAFT_REVIEW_ID = "dddd0000-0000-0000-0000-000000000022";
       const DRAFT_REVIEW_UUID = "dddd0000-0000-0000-0000-000000000023";
-      const DRAFT_META_ID   = "dddd0000-0000-0000-0000-000000000024";
+      const DRAFT_META_ID = "dddd0000-0000-0000-0000-000000000024";
       const DRAFT_META_UUID = "dddd0000-0000-0000-0000-000000000025";
 
       await INSERT.into(Review_Meta.drafts).entries({
@@ -748,9 +755,9 @@ describe("Java HCQL db proxy", () => {
 
     it("should persist and return array-typed tags field in ExpertReviews.drafts", async () => {
       const { ExpertReviews } = cds.entities("bookshop");
-      
+
       const DRAFT_REVIEW_ID = "dddd0000-0000-0000-0000-000000000026";
-      const DRAFT_UUID      = "dddd0000-0000-0000-0000-000000000027";
+      const DRAFT_UUID = "dddd0000-0000-0000-0000-000000000027";
 
       await INSERT.into(ExpertReviews.drafts).entries({
         ID: DRAFT_REVIEW_ID,
@@ -775,10 +782,10 @@ describe("Java HCQL db proxy", () => {
   describe("Review_Meta.drafts — association navigation", () => {
     it("should navigate expertReview back-link from Review_Meta.drafts to ExpertReviews.drafts", async () => {
       const { ExpertReviews, Review_Meta } = cds.entities("bookshop");
-      
-      const DRAFT_REVIEW_ID   = "dddd0000-0000-0000-0000-000000000022";
+
+      const DRAFT_REVIEW_ID = "dddd0000-0000-0000-0000-000000000022";
       const DRAFT_REVIEW_UUID = "dddd0000-0000-0000-0000-000000000023";
-      const DRAFT_META_ID   = "dddd0000-0000-0000-0000-000000000024";
+      const DRAFT_META_ID = "dddd0000-0000-0000-0000-000000000024";
       const DRAFT_META_UUID = "dddd0000-0000-0000-0000-000000000025";
 
       await INSERT.into(ExpertReviews.drafts).entries({
@@ -931,9 +938,10 @@ describe("Java HCQL db proxy", () => {
       expect(res.length).to.equal(1);
       expect(res[0].name).to.equal("Edgar Allan Poe");
       expect(res[0].books).to.have.length(2);
-      expect(res[0].books.map((b) => b.title).sort()).to.deep.equal(
-        ["Eleonora", "The Raven"],
-      );
+      expect(res[0].books.map((b) => b.title).sort()).to.deep.equal([
+        "Eleonora",
+        "The Raven",
+      ]);
     });
   });
 
@@ -1069,7 +1077,6 @@ describe("Java HCQL db proxy", () => {
       expect(Number(res[0].minRating)).to.equal(3);
     });
 
-    // TODO: Review AI Test
     it("should return sum of all ratings via sum(rating)", async () => {
       const { Review_Meta } = cds.entities("bookshop");
 
@@ -1137,8 +1144,8 @@ describe("Java HCQL db proxy", () => {
 
   describe("deep write", () => {
     it("should persist Book and nested ExpertReview in a single deep INSERT via composition", async () => {
-      // TODO: Review AI Test
       const { Books, ExpertReviews } = cds.entities("bookshop");
+
       const NEW_BOOK_ID = "eeee0000-0000-0000-0000-000000000001";
       const NEW_REVIEW_ID = "eeee0000-0000-0000-0000-000000000002";
 
@@ -1146,21 +1153,29 @@ describe("Java HCQL db proxy", () => {
         ID: NEW_BOOK_ID,
         title: "Deep Write Test Book",
         author_ID: EMILY_ID,
-        expertReviews: [{ ID: NEW_REVIEW_ID, title: "An expert opinion", shortText: "Excellent.", longText: "A thorough review." }],
+        expertReviews: [
+          {
+            ID: NEW_REVIEW_ID,
+            title: "An expert opinion",
+            shortText: "Excellent.",
+            longText: "A thorough review.",
+          },
+        ],
       });
 
       const book = await SELECT.one.from(Books).where({ ID: NEW_BOOK_ID });
       expect(book).to.exist;
       expect(book.title).to.equal("Deep Write Test Book");
 
-      const reviews = await SELECT.from(ExpertReviews).where({ book_ID: NEW_BOOK_ID });
+      const reviews = await SELECT.from(ExpertReviews).where({
+        book_ID: NEW_BOOK_ID,
+      });
       expect(reviews).to.be.an("array").with.length(1);
       expect(reviews[0].ID).to.equal(NEW_REVIEW_ID);
       expect(reviews[0].title).to.equal("An expert opinion");
     });
 
     it("should update Book and nested ExpertReview in a single deep UPDATE via composition", async () => {
-      // TODO: Review AI Test
       const { Books, ExpertReviews } = cds.entities("bookshop");
 
       await UPDATE(Books, WUTHERING_ID).set({
@@ -1172,14 +1187,16 @@ describe("Java HCQL db proxy", () => {
       expect(book).to.exist;
       expect(book.title).to.equal("Updated Heights");
 
-      const review = await SELECT.one.from(ExpertReviews).where({ ID: REVIEW_ID });
+      const review = await SELECT.one
+        .from(ExpertReviews)
+        .where({ ID: REVIEW_ID });
       expect(review).to.exist;
       expect(review.title).to.equal("Updated Review");
     });
 
     it("should persist Book and nested ExpertReview in a single deep UPSERT via composition", async () => {
-      // TODO: Review AI Test
       const { Books, ExpertReviews } = cds.entities("bookshop");
+
       const NEW_BOOK_ID = "eeee0000-0000-0000-0000-000000000003";
       const NEW_REVIEW_ID = "eeee0000-0000-0000-0000-000000000004";
 
@@ -1187,14 +1204,23 @@ describe("Java HCQL db proxy", () => {
         ID: NEW_BOOK_ID,
         title: "Deep Upsert Test Book",
         author_ID: EMILY_ID,
-        expertReviews: [{ ID: NEW_REVIEW_ID, title: "A fresh take", shortText: "Insightful.", longText: "Very thoughtful." }],
+        expertReviews: [
+          {
+            ID: NEW_REVIEW_ID,
+            title: "A fresh take",
+            shortText: "Insightful.",
+            longText: "Very thoughtful.",
+          },
+        ],
       });
 
       const book = await SELECT.one.from(Books).where({ ID: NEW_BOOK_ID });
       expect(book).to.exist;
       expect(book.title).to.equal("Deep Upsert Test Book");
 
-      const reviews = await SELECT.from(ExpertReviews).where({ book_ID: NEW_BOOK_ID });
+      const reviews = await SELECT.from(ExpertReviews).where({
+        book_ID: NEW_BOOK_ID,
+      });
       expect(reviews).to.be.an("array").with.length(1);
       expect(reviews[0].ID).to.equal(NEW_REVIEW_ID);
       expect(reviews[0].title).to.equal("A fresh take");
