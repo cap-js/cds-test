@@ -29,7 +29,7 @@
     "chest": "node bin/chest.js",
     "test": "node bin/chest.js",
     "jest": "npx jest --silent",
-    "mocha": "npx mocha --parallel",
+    "mocha": "npx mocha",
     "vitest": "npx vitest --globals --silent=true",
     "node-test": "node --test"
   },
@@ -40,5 +40,9 @@
   },
   "devDependencies": {
     "@cap-js/sqlite": "^2"
+  },
+  "mocha": {
+    "spec": "test/**/*.test.js",
+    "parallel": true
   }
 }
