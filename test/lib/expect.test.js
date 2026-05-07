@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 if (typeof describe === 'undefined') ({ describe, it } = require('node:test'))
-const expect = require('../lib/expect')
+const expect = require('../../lib/expect')
 
 describe (`supported chai features subset ...`, ()=>{
 
@@ -118,6 +118,14 @@ describe (`supported chai features subset ...`, ()=>{
     expect(a).to.have.own.property('a')
     expect(a).to.have.property('b')
     expect(a).to.not.have.an.own.property('b')
+  })
+
+  it ('not.to.have.property passes when property is absent', () => {
+    expect({ a: 1 }).not.to.have.property('b')
+  })
+
+  it ('not.to.have.property throws when property is present', () => {
+    expect(() => expect({ a: 1 }).not.to.have.property('a')).throws()
   })
 
   it (`supports .nested.property`, ()=>{

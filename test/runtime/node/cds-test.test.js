@@ -1,5 +1,5 @@
 const cds = require ('@sap/cds/lib') // using cds/lib here to bypass @types
-const cds_test = require ('..')
+const cds_test = require ('../../..')
 const Books = 'sap.capire.bookshop.Books'
 
 describe('cds_test', ()=>{

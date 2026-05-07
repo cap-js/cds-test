@@ -1,6 +1,3 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
 name: CI
 
 on:
@@ -14,38 +11,55 @@ jobs:
   test:
     strategy:
       matrix:
-        node-version: [24, 22]  # see https://nodejs.org/en/about/releases/
+        node-version: [22, 24]
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
 
     steps:
-    - uses: actions/checkout@v6
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v6
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'  # only if package-lock is present
+      - uses: actions/checkout@v6
 
-    - run: npm ci
+      - name: Set up JDK
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'sapmachine'
+          cache: maven
 
-    - name: Node Test Runner
-      run: npm run node-test
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
 
-    - name: Jest
-      run: npm run jest
+      - run: npm ci
 
-    - name: Vitest
-      run: npm run vitest -- --watch false
+      - name: Warm npm cache for Java app
+        run: npm ci && node -e "require('fs').rmSync('node_modules', {recursive:true,force:true})"
+        working-directory: test/runtime/java/app
 
-    - name: Mocha
-      run: npm run mocha
+      - name: Build Java app
+        run: |
+          node -e "require('./lib/java.js').generateProxy('test/runtime/java/app').catch(e=>{console.error(e);process.exit(1)})"
+          mvn -f test/runtime/java/app/pom.xml package -DskipTests
 
-    - name: Chest
-      if: runner.os != 'Windows'
-      run: npm run chest
+      - name: Node Test Runner
+        run: npm run node-test
 
-    - name: Axios installed
-      run: |
-        npm i axios -D
-        npm run node-test
-        git checkout package.json
+      - name: Jest
+        run: npm run jest
+
+      - name: Vitest
+        run: npm run vitest
+
+      - name: Mocha
+        run: npm run mocha
+
+      - name: Chest
+        run: npm run chest
+
+      - name: Axios installed
+        run: |
+          npm i axios -D
+          npm run node-test
+          git checkout package.json

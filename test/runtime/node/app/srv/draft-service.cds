@@ -1,6 +1,6 @@
 using { sap.capire.bookshop as my } from '../db/schema';
 
-@path: '/draft'
+@path: 'draft'
 service DraftService {
   @odata.draft.enabled
   entity Books as projection on my.Books;
