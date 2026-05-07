@@ -11,19 +11,15 @@ jobs:
   test:
     strategy:
       matrix:
-        suite: [lib, node, java]
         node-version: [22, 24]
         os: [ubuntu-latest, windows-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 15
-    env:
-      CDS_ENV: ${{ matrix.suite == 'java' && 'java' || '' }}
 
     steps:
       - uses: actions/checkout@v6
 
       - name: Set up JDK
-        if: matrix.suite == 'java'
         uses: actions/setup-java@v5
         with:
           java-version: '21'
@@ -39,35 +35,31 @@ jobs:
       - run: npm ci
 
       - name: Warm npm cache for Java app
-        if: matrix.suite == 'java'
         run: npm ci && node -e "require('fs').rmSync('node_modules', {recursive:true,force:true})"
         working-directory: test/runtime/java/app
 
       - name: Build Java app
-        if: matrix.suite == 'java'
         run: |
           node -e "require('./lib/java.js').generateProxy('test/runtime/java/app').catch(e=>{console.error(e);process.exit(1)})"
           mvn -f test/runtime/java/app/pom.xml package -DskipTests
 
       - name: Node Test Runner
-        run: npm run node-test:${{ matrix.suite }}:ci
+        run: npm run node-test
 
       - name: Jest
-        run: npm run jest:${{ matrix.suite }}:ci
+        run: npm run jest
 
       - name: Vitest
-        run: npm run vitest:${{ matrix.suite }}:ci
+        run: npm run vitest
 
       - name: Mocha
-        run: npm run mocha:${{ matrix.suite }}:ci
+        run: npm run mocha
 
       - name: Chest
-        if: matrix.suite == 'node'
         run: npm run chest
 
       - name: Axios installed
-        if: matrix.suite == 'node'
         run: |
           npm i axios -D
-          npm run node-test:node
+          npm run node-test
           git checkout package.json
