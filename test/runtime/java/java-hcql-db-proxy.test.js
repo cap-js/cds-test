@@ -1,9 +1,6 @@
 const cds_test = require("../../../lib/cds-test");
 
 describe("Java HCQL db proxy", () => {
-  if (!/java/.test(process.env.CDS_ENV))
-    return it("skipped in profile node", () => {});
-
   const {
     expect,
     cds,
