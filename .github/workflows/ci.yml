@@ -56,7 +56,7 @@ jobs:
         run: npm run mocha
 
       - name: Chest
-        run: npm run chest
+        run: npm run chest -- --unmute
 
       - name: Axios installed
         run: |
