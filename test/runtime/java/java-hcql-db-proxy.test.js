@@ -1227,6 +1227,17 @@ describe("Java HCQL db proxy", () => {
     });
   });
 
+  describe("CDS-defined DB view (BooksWithAuthor)", () => {
+    it("should be accessible through the db proxy", async () => {
+      const res = await SELECT.from("bookshop.BooksWithAuthor");
+      expect(res.length).to.equal(3);
+      
+      const wuthering = res.find((r) => r.title === "Wuthering Heights");
+      expect(wuthering).to.exist;
+      expect(wuthering.authorName).to.equal("Emily Brontë");
+    });
+  });
+
   describe("SELECT.localized", () => {
     it.skip("should return Books with localized field values via SELECT.localized", async () => {
       const { Books } = cds.entities("bookshop");

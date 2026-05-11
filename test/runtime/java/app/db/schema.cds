@@ -39,3 +39,9 @@ entity Review_Meta {
       rating           : Integer;
       notes            : String;
 }
+
+entity BooksWithAuthor as select from Books {
+  ID,
+  title,
+  author.name as authorName
+}
