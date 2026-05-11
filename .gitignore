@@ -18,4 +18,4 @@ gen/
 .flattened-pom.xml
 schema*.sql
 *.log*
-test/**/package-lock.json
+test/**/node/app/package-lock.json
