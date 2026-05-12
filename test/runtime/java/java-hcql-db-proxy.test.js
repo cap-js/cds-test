@@ -516,7 +516,7 @@ describe("Java HCQL db proxy", () => {
       expect(res).to.be.an("array").with.length(0);
     });
 
-    it("should INSERT a Books.drafts row and return it in a subsequent SELECT", async () => {
+    it("should INSERT a Books.drafts row with DraftAdministrativeData transitively and return both in SELECT", async () => {
       const { Books } = cds.entities("bookshop");
 
       const NEW_DRAFT_ID = "dddd0000-0000-0000-0000-000000000001";
@@ -529,7 +529,7 @@ describe("Java HCQL db proxy", () => {
         IsActiveEntity: false,
         HasActiveEntity: false,
         HasDraftEntity: true,
-        DraftAdministrativeData_DraftUUID: DRAFT_UUID,
+        DraftAdministrativeData: { DraftUUID: DRAFT_UUID },
       });
 
       const row = await SELECT.one
@@ -539,7 +539,13 @@ describe("Java HCQL db proxy", () => {
       expect(row).to.exist;
       expect(row.title).to.equal("Draft Insert Test");
       expect(row.IsActiveEntity).to.equal(false);
-      expect(row.DraftAdministrativeData_DraftUUID).to.equal(DRAFT_UUID);
+
+      const adminRow = await SELECT.one
+        .from("DRAFT.DraftAdministrativeData")
+        .where({ DraftUUID: DRAFT_UUID });
+
+      expect(adminRow).to.exist;
+      expect(adminRow.ID).to.equal(DRAFT_UUID)
     });
 
     it("should deep INSERT Books.drafts with nested ExpertReviews.drafts via composition", async () => {
@@ -1291,6 +1297,52 @@ describe("Java HCQL db proxy", () => {
       expect(res.length).to.equal(1);
       expect(res[0].title).to.equal("Eleonora");
       expect(res[0].author.name).to.equal("Edgar Allan Poe");
+    });
+  });
+
+  describe("DRAFT.DraftAdministrativeData proxy", () => {
+    const DRAFT_ADMIN_UUID = "ee000000-0000-0000-0000-000000000001";
+
+    it("should return an empty array when queried with no draft rows present", async () => {
+      const rows = await SELECT.from("DRAFT.DraftAdministrativeData");
+
+      expect(rows).to.be.an("array");
+      expect(rows.length).to.equal(0);
+    });
+
+    it("should allow INSERT into and SELECT from DRAFT.DraftAdministrativeData", async () => {
+      await DELETE.from("DRAFT.DraftAdministrativeData").where({ DraftUUID: DRAFT_ADMIN_UUID });
+
+      await INSERT.into("DRAFT.DraftAdministrativeData").entries({
+        DraftUUID: DRAFT_ADMIN_UUID,
+        CreatedByUser: "test-user",
+        LastChangedByUser: "test-user",
+      });
+
+      const rows = await SELECT.from("DRAFT.DraftAdministrativeData").where({ DraftUUID: DRAFT_ADMIN_UUID });
+
+      expect(rows).to.be.an("array").with.length(1);
+      expect(rows[0].CreatedByUser).to.equal("test-user");
+    });
+
+    it("should create DRAFT.DraftAdministrativeData row transitively when INSERTing into Books.drafts", async () => {
+      const { Books } = cds.entities("bookshop");
+      const TRANSITIVE_DRAFT_ID   = "ee000000-0000-0000-0000-000000000002";
+      const TRANSITIVE_ADMIN_UUID = "ee000000-0000-0000-0000-000000000003";
+
+      await INSERT.into(Books.drafts).entries({
+        ID: TRANSITIVE_DRAFT_ID,
+        DraftAdministrativeData: { DraftUUID: TRANSITIVE_ADMIN_UUID, CreatedByUser: "transitive-user" },
+      });
+
+      const draftRow = await SELECT.one.from(Books.drafts).where({ ID: TRANSITIVE_DRAFT_ID });
+      expect(draftRow).to.exist;
+      expect(draftRow.ID).to.equal(TRANSITIVE_DRAFT_ID);
+
+      const adminRows = await SELECT.from("DRAFT.DraftAdministrativeData").where({ DraftUUID: TRANSITIVE_ADMIN_UUID });
+      expect(adminRows).to.be.an("array").with.length(1);
+      expect(adminRows[0].DraftUUID).to.equal(TRANSITIVE_ADMIN_UUID);
+      expect(adminRows[0].CreatedByUser).to.equal("transitive-user");
     });
   });
 });

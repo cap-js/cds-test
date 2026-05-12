@@ -11,6 +11,9 @@ describe("Java integration", () => {
   const EMILY_ID     = 'a0000000-0000-0000-0000-000000000001'
   const WUTHERING_ID = 'b0000000-0000-0000-0000-000000000001'
 
+  const DRAFT_ID         = 'dc000000-0000-0000-0000-000000000001'
+  const DRAFT_ADMIN_ID   = 'da000000-0000-0000-0000-000000000001'
+
   beforeEach(data.reset) // ... will be awaited before every test
 
   it("should serve Books via Java OData endpoint", async () => {
@@ -98,6 +101,73 @@ describe("Java integration", () => {
       const afterReset = await SELECT.from(BooksWithAuthor)
       expect(afterReset.length).to.equal(3)
       expect(afterReset.find(r => r.title === 'Temporary')).not.to.exist
+    })
+  })
+
+  describe("data.reset with draft-enabled entities", () => {
+    it("should insert DraftAdministrativeData transitively and delete draft rows on reset", async () => {
+      const { Books } = cds.entities('bookshop')
+
+      await INSERT.into(Books.drafts).entries({
+        ID: DRAFT_ID,
+        DraftAdministrativeData: { DraftUUID: DRAFT_ADMIN_ID, CreatedByUser: 'tester' }
+      })
+
+      const drafts = await SELECT.from(Books.drafts)
+      expect(drafts.length).to.equal(1)
+      expect(drafts[0].ID).to.equal(DRAFT_ID)
+
+      const adminRows = await SELECT.from('DRAFT.DraftAdministrativeData')
+        .where({ DraftUUID: DRAFT_ADMIN_ID })
+      expect(adminRows.length).to.equal(1)
+      expect(adminRows[0].DraftUUID).to.equal(DRAFT_ADMIN_ID)
+      expect(adminRows[0].CreatedByUser).to.equal('tester')
+
+      await data.reset()
+
+      const draftsAfterReset = await SELECT.from(Books.drafts)
+      expect(draftsAfterReset.length).to.equal(0)
+
+      const adminRowsAfterReset = await SELECT.from('DRAFT.DraftAdministrativeData')
+      expect(adminRowsAfterReset.length).to.equal(0)
+    })
+  })
+
+  describe("data.reset skips composition children via up_ guard", () => {
+    it("should restore ExpertReviews to seed count after data.reset without erroring", async () => {
+      const { ExpertReviews } = cds.entities('bookshop')
+      const insertedID = cds.utils.uuid()
+
+      await INSERT.into(ExpertReviews).entries({
+        ID: insertedID,
+        book_ID: WUTHERING_ID,
+        title: 'Extra Review',
+        shortText: 'Short',
+        longText: 'Long'
+      })
+
+      const before = await SELECT.from(ExpertReviews)
+      expect(before.length).to.equal(2)
+      expect(before.find(r => r.ID === insertedID)).to.exist
+      expect(before.find(r => r.title === 'Extra Review')).to.exist
+
+      await data.reset()
+
+      const after = await SELECT.from(ExpertReviews)
+      expect(after.length).to.equal(1)
+      expect(after.find(r => r.ID === insertedID)).not.to.exist
+    })
+  })
+
+  describe("data.reset skips @cds.persistence.skip entities", () => {
+    it("should not attempt DELETE on @cds.persistence.skip entities", async () => {
+      // beforeEach data.reset() already executed without error;
+      // > if SkipMe were included in deletes, Java would error on the non-existent table
+      // -> Only test if the entity is part of the model as expected
+      const { SkipMe } = cds.entities('bookshop')
+      expect(SkipMe).to.exist
+      expect(SkipMe.name).to.equal('bookshop.SkipMe')
+      expect(SkipMe['@cds.persistence.skip']).to.equal(true)
     })
   })
 });
