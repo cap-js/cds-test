@@ -38,10 +38,11 @@ jobs:
         run: npm ci && node -e "require('fs').rmSync('node_modules', {recursive:true,force:true})"
         working-directory: test/runtime/java/app
 
-      - name: Build Java app
-        run: |
-          node -e "require('./lib/java.js').generateProxy('test/runtime/java/app').catch(e=>{console.error(e);process.exit(1)})"
-          mvn -f test/runtime/java/app/pom.xml package -DskipTests
+      - name: Generate Java proxy
+        run: node -e "require('./lib/java.js').generateProxy('test/runtime/java/app').catch(e=>{console.error(e);process.exit(1)})"
+
+      - name: Maven package
+        run: mvn -f test/runtime/java/app/pom.xml package -DskipTests -e
 
       - name: Node Test Runner
         run: npm run node-test
