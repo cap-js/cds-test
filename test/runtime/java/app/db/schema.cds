@@ -45,3 +45,9 @@ entity BooksWithAuthor as select from Books {
   title,
   author.name as authorName
 }
+
+@cds.persistence.skip: true
+entity SkipMe {
+  key ID    : UUID;
+      value : String;
+}
