@@ -11,7 +11,7 @@ describe("Java integration", () => {
   const EMILY_ID     = 'a0000000-0000-0000-0000-000000000001'
   const WUTHERING_ID = 'b0000000-0000-0000-0000-000000000001'
 
-  beforeEach(() => data.reset())
+  beforeEach(data.reset)
 
   it("should serve Books via Java OData endpoint", async () => {
     const res = await GET`/odata/v4/catalog/Books`;
