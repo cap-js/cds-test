@@ -545,7 +545,7 @@ describe("Java HCQL db proxy", () => {
         .where({ DraftUUID: DRAFT_UUID });
 
       expect(adminRow).to.exist;
-      expect(adminRow.ID).to.equal(DRAFT_UUID)
+      expect(adminRow.DraftUUID).to.equal(DRAFT_UUID)
     });
 
     it("should deep INSERT Books.drafts with nested ExpertReviews.drafts via composition", async () => {
