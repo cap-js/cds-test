@@ -11,7 +11,7 @@ describe("Java integration", () => {
   const EMILY_ID     = 'a0000000-0000-0000-0000-000000000001'
   const WUTHERING_ID = 'b0000000-0000-0000-0000-000000000001'
 
-  beforeEach(data.reset)
+  beforeEach(data.reset) // ... will be awaited before every test
 
   it("should serve Books via Java OData endpoint", async () => {
     const res = await GET`/odata/v4/catalog/Books`;
@@ -81,4 +81,23 @@ describe("Java integration", () => {
     expect(res.data.value[0].name).to.equal("Fiction");
     expect(res.data.value[0].children.length).to.equal(2);
   });
+
+  describe("data.reset with DB views", () => {
+    it("should leave BooksWithAuthor view queryable with seed data after data.reset", async () => {
+      const { BooksWithAuthor, Books } = cds.entities('bookshop')
+
+      // Mutate the underlying table so the view reflects 4 rows
+      await INSERT.into(Books).entries({ title: "Temporary", author_ID: EMILY_ID })
+
+      expect((await SELECT.from(BooksWithAuthor)).length).to.equal(4)
+
+      // reset must not throw — a DELETE attempted on a view would propagate here
+      await data.reset()
+
+      // View must be queryable and reflect restored seed data
+      const afterReset = await SELECT.from(BooksWithAuthor)
+      expect(afterReset.length).to.equal(3)
+      expect(afterReset.find(r => r.title === 'Temporary')).not.to.exist
+    })
+  })
 });
