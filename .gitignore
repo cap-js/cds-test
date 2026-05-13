@@ -19,3 +19,6 @@ gen/
 schema*.sql
 *.log*
 test/**/node/app/package-lock.json
+
+db-proxy.json
+db-porxy.cds
