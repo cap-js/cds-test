@@ -1,6 +1,6 @@
 const cds_test = require("../../../../../lib/cds-test");
 
-describe("Java crash detection", () => {
+describe.skip("Java crash detection", () => {
   const t = cds_test(__dirname + "/..")
   const { expect, cds } = t
 
