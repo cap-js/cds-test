@@ -21,4 +21,4 @@ schema*.sql
 test/**/node/app/package-lock.json
 
 db-proxy.json
-db-porxy.cds
+db-proxy.cds
