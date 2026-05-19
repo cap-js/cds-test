@@ -34,12 +34,9 @@ jobs:
 
       - run: npm ci
 
-      - name: Warm npm cache for Java app
-        run: npm ci && node -e "require('fs').rmSync('node_modules', {recursive:true,force:true})"
+      - name: Install Java app npm dependencies
+        run: npm ci
         working-directory: test/runtime/java/app
-
-      - name: Generate Java proxy
-        run: node -e "require('./lib/java.js').generateProxy('test/runtime/java/app').catch(e=>{console.error(e);process.exit(1)})"
 
       - name: Maven package
         run: mvn -f test/runtime/java/app/pom.xml package -DskipTests -e
