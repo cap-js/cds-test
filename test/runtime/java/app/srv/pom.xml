@@ -75,30 +75,6 @@
 				</executions>
 			</plugin>
 
-			<!-- GENERATE DB PROXY BEFORE CDS BUILD -->
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>3.5.0</version>
-				<executions>
-					<execution>
-						<id>generate-proxy</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-						<configuration>
-							<executable>node</executable>
-							<arguments>
-								<argument>-e</argument>
-								<argument>require('@cap-js/cds-test/lib/java.js').generateProxy('.').catch(e=>{console.error(e);process.exit(1)})</argument>
-							</arguments>
-							<workingDirectory>${project.basedir}/..</workingDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 			<!-- STEPS TO BUILD CDS MODEL AND GENERATE POJOs -->
 			<plugin>
 				<groupId>com.sap.cds</groupId>
