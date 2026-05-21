@@ -34,8 +34,9 @@ jobs:
 
       - run: npm ci
 
-      - name: Expose hoisted node_modules/.bin to PATH
-        run: echo "$GITHUB_WORKSPACE/node_modules/.bin" >> $GITHUB_PATH
+      - name: Install Java app npm dependencies
+        run: npm ci
+        working-directory: test/runtime/java/app
 
       - name: Maven package
         run: mvn -f test/runtime/java/app/pom.xml package -DskipTests -e

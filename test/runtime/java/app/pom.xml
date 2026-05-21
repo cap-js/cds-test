@@ -80,7 +80,7 @@
 							<executable>node</executable>
 							<arguments>
 								<argument>-e</argument>
-								<argument>require('../../../../lib/java.js').generateProxy('.').catch(e=>{console.error(e);process.exit(1)})</argument>
+								<argument>require('@cap-js/cds-test/lib/java.js').generateProxy('.').catch(e=>{console.error(e);process.exit(1)})</argument>
 							</arguments>
 						</configuration>
 					</execution>
