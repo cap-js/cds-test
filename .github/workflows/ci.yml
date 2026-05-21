@@ -34,10 +34,6 @@ jobs:
 
       - run: npm ci
 
-      - name: Install Java app npm dependencies
-        run: npm ci
-        working-directory: test/runtime/java/app
-
       - name: Maven package
         run: mvn -f test/runtime/java/app/pom.xml package -DskipTests -e
 
