@@ -22,6 +22,10 @@
     "lib/",
     "index.js"
   ],
+  "workspaces": [
+    "test/runtime/java/app",
+    "test/runtime/node/app"
+  ],
   "engines": {
     "node": ">=22"
   },
