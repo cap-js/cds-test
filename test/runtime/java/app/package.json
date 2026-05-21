@@ -1,7 +1,7 @@
 {
   "name": "@cap-js/test-java-app",
   "devDependencies": {
-    "@cap-js/cds-test": "*",
+    "@cap-js/cds-test": "file:../../../..",
     "@sap/cds-dk": "^9"
   }
 }
