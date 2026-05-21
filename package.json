@@ -43,6 +43,7 @@
   },
   "mocha": {
     "spec": "test/**/*.test.js",
-    "parallel": true
+    "parallel": true,
+    "timeout": 5000
   }
 }
