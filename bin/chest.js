@@ -62,10 +62,17 @@ async function test (argv,o) {
   if (o.list) return list (o.files)
   if (o.skip) process.env._chest_skip = o.skip
   if (o.files.length > 1) console.log (DIMMED,`\nRunning ${o.files.length} test suites...`, RESET)
+  
+  const debugging = process.execArgv.some(a => /^--inspect/.test(a))
+  if (debugging && process.execArgv.some(a => /^--inspect-brk/.test(a))) {
+    require('node:inspector').open(process.debugPort) // resume parent so workers can start
+  }
+
   const test = require('node:test').run({ ...o,
     execArgv: [ '--require', require.resolve('../lib/fixtures/node-test.js') ],
+    inspectPort: debugging ? process.debugPort + 1 : undefined,
     timeout: +o.timeout || undefined,
-    concurrency: +o.workers || true,
+    concurrency: debugging ? 1 : (+o.workers || true),
     forceExit: true,
     testSkipPatterns: regex4 (o.skip), skip: false,
     testNamePatterns: regex4 (o.only), only: false,
