@@ -64,9 +64,9 @@ async function test (argv,o) {
   if (o.files.length > 1) console.log (DIMMED,`\nRunning ${o.files.length} test suites...`, RESET)
   
   const debugging = process.execArgv.some(a => /^--inspect/.test(a))
-  if (debugging && process.execArgv.some(a => /^--inspect-brk/.test(a))) {
-    require('node:inspector').open(process.debugPort) // resume parent so workers can start
-  }
+  // if (debugging && process.execArgv.some(a => /^--inspect-brk/.test(a))) {
+  //   require('node:inspector').open(process.debugPort) // resume parent so workers can start
+  // }
 
   const test = require('node:test').run({ ...o,
     execArgv: [ '--require', require.resolve('../lib/fixtures/node-test.js') ],
