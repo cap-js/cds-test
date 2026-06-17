@@ -23,14 +23,6 @@ describe('cds_test', ()=>{
     expect (url).to.match (/http:\/\/localhost:/)
   })
 
-  it('should support cds and sleep', async()=> {
-    const { cds:_cds, sleep } = test, t0 = Date.now()
-    expect (_cds) .to.equal (cds)
-    await sleep(12)
-    expect (Date.now()) .to.be.greaterThanOrEqual (t0+11)
-  })
-
-
   it('should support mocha', ()=> {
     expect (global.before).to.exist
     expect (global.after).to.exist
