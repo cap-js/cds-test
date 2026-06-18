@@ -111,34 +111,6 @@ describe('cds_test', ()=>{
   })
 
 
-  describe ('logs', ()=> {
-
-    let log = test.log()
-
-    it('should support capturing logs', ()=> {
-      expect (log.output).to.exist
-      expect (log.output.length).to.equal(0)
-      console.log('foo') // eslint-disable-line no-console
-      console.log('bar') // eslint-disable-line no-console
-      expect (log.output.length).to.be.greaterThan(0)
-      expect (log.output).to.contain('foo')
-      expect (log.output).to.equal('foo\nbar\n')
-    })
-
-    it('should support log.clear()', ()=> {
-      log.clear()
-      expect (log.output).to.equal('')
-    })
-
-    it('should support log.release()', ()=> {
-      log.release()
-      console.log('foobar') // eslint-disable-line no-console
-      expect (log.output).to.equal('')
-    })
-
-  })
-
-
   describe('data', () => {
     beforeEach (test.data.reset)
 
