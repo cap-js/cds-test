@@ -6,6 +6,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## Version 1.0.2 - tbd
+
+### Fixed
+
+- `cds.test(dir)` now re-derives `cds.env` when it switches `cds.root` to a different folder, so serving a project by absolute or out-of-tree path no longer uses stale configuration from the initial working directory.
+
 ## [1.0.1] - 2026-04-29
 
 ### Fixed
