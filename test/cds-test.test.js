@@ -188,4 +188,22 @@ describe('cds_test', ()=>{
     await expect(GET `/foo`).to.be.rejectedWith(/not.*started.*cds\.test/is)
   })
 
+  describe ('.in()', ()=> {
+    const { path } = cds.utils
+    const app = path.resolve(__dirname,'app')
+
+    it('should re-derive cds.env when switching to a different folder', () => {
+      // simulate cds.env loaded in a different folder before
+      cds.root = __dirname
+      delete cds.env; delete cds.requires
+      void cds.env // force env to load with _home === __dirname
+      expect (cds.env._home) .to.equal (__dirname)
+
+      cds_test.in(__dirname,'app')
+      expect (cds.root) .to.equal (app)
+      expect (cds.env._home) .to.equal (app)
+      expect (cds.env.requires.db.kind) .to.equal ('sqlite')
+    })
+  })
+
 })
