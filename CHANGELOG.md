@@ -11,6 +11,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Fixed
 
 - `Buffer` request bodies are no longer serialized via `JSON.stringify()`
+- In `chest`-powered tests, `inspectPort` configuration will be passed to `node:test.run(...)` when debugging
+- In `chest`-powered tests, `concurrency` of `node:test.run(...)` will be limitted to `1` to enable debugging
 
 ## [1.0.1] - 2026-04-29
 

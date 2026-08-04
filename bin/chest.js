@@ -53,6 +53,9 @@ const os = require('os'), home = os.userInfo().homedir
 const path = require('node:path')
 const fs = require('node:fs')
 
+const DEBUGGING = process.env.VSCODE_INSPECTOR_OPTIONS 
+  || process.argv.concat(process.execArgv).some(ele => ele.startsWith('--inspect'))
+
 async function test (argv,o) {
   if (o.help || argv == '?') return console.log (USAGE)
   if (o.recent) o = { ...o, ...recent().options }
@@ -62,10 +65,12 @@ async function test (argv,o) {
   if (o.list) return list (o.files)
   if (o.skip) process.env._chest_skip = o.skip
   if (o.files.length > 1) console.log (DIMMED,`\nRunning ${o.files.length} test suites...`, RESET)
+
   const test = require('node:test').run({ ...o,
     execArgv: [ '--require', require.resolve('../lib/fixtures/node-test.js') ],
+    inspectPort: DEBUGGING ? process.debugPort + 1 : undefined,
     timeout: +o.timeout || undefined,
-    concurrency: +o.workers || true,
+    concurrency: DEBUGGING ? 1 : (+o.workers || true),
     forceExit: true,
     testSkipPatterns: regex4 (o.skip), skip: false,
     testNamePatterns: regex4 (o.only), only: false,
