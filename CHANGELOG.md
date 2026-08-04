@@ -6,6 +6,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.0.2] - 2026-08-04
+
+### Fixed
+
+- `Buffer` request bodies are no longer serialized via `JSON.stringify()`
+
 ## [1.0.1] - 2026-04-29
 
 ### Fixed
