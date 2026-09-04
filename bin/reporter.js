@@ -11,6 +11,7 @@ module.exports = function report_on (test,o) {
   const files = o.files
   const suites = { passed:[], failed:[] }
   const tests = { passed:0, failed:0, todo:0, skipped:0, recent:null }
+  const _stderr = new Map()
 
   // monkey-patch test.on to support filter functions like root, leaf, any
   const {on} = test; test.on = (eve,filter,fn) => on.call (test, 'test:'+eve, !fn ? fn = filter : x => filter(x) && fn(x))
@@ -22,7 +23,7 @@ module.exports = function report_on (test,o) {
   // add handlers according to options
   if (o.debug ??= process.env.debug) return debug(o.debug) // eslint-disable-line no-cond-assign
   if (o.verbose ??= files.length === 1 && !o.silent) verbose(); else silent() // eslint-disable-line no-cond-assign
-  if (o.unmute) unmute()
+  if (o.unmute) unmute(); else capture()
   common()
 
   return test
@@ -55,7 +56,9 @@ module.exports = function report_on (test,o) {
         .replace(/\s+.*\(node:.*/g,'')
         .replace(/^/gm, _indent4(x)+'  ')
       )
-      if (!err.message && !o.unmute)
+      const buf = _stderr.get(x.file)
+      if (buf?.length && !o.unmute) console.log(RED + buf.join('').trimEnd() + RESET)
+      else if (!err.message && !o.unmute)
         console.log('   ', INVERT+YELLOW, 'NOTE', RESET+YELLOW, '--unmute app log output to see error details.', RESET )
       console.log(RESET)
     })
@@ -130,6 +133,22 @@ module.exports = function report_on (test,o) {
   function unmute() {
     test.on ('stdout', x => process.stdout.write(x.message))
     test.on ('stderr', x => process.stderr.write(x.message))
+  }
+
+
+  /**
+   * Buffers stderr per file so it can be printed when a file fails.
+   * Keeps memory bounded by dropping buffers for passing files on complete.
+   */
+  function capture() {
+    test.on ('stderr', x => {
+      const buf = _stderr.get(x.file) ?? []
+      buf.push(x.message)
+      _stderr.set(x.file, buf)
+    })
+    test.on ('complete', root, x => {
+      if (x.details.passed) _stderr.delete(x.file)
+    })
   }
 
 
