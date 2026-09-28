@@ -48,12 +48,12 @@ Options:
 
 const { DIMMED, YELLOW, GRAY, RESET } = require('./colors')
 const regex4 = s => !s ? null : RegExp (s.replace(/[,.*]/g, s => ({ ',': '|', '.': '\\.', '*': '.*' })[s]))
-const recent = () => {try { return require(home+'/.cds-test-recent.json') } catch {/* egal */}}
+const recent = () => {try { return require(home+'/.cds/test-recent.json') } catch {/* egal */}}
 const os = require('os'), home = os.userInfo().homedir
 const path = require('node:path')
 const fs = require('node:fs')
 
-const DEBUGGING = process.env.VSCODE_INSPECTOR_OPTIONS 
+const DEBUGGING = process.env.VSCODE_INSPECTOR_OPTIONS
   || process.argv.concat(process.execArgv).some(ele => ele.startsWith('--inspect'))
 
 async function test (argv,o) {
