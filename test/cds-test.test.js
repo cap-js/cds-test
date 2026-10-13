@@ -111,6 +111,25 @@ describe('cds_test', ()=>{
   })
 
 
+  describe ('binary data', ()=> {
+
+    it('should send Buffer bodies as-is and receive octet-stream as Buffer', async () => {
+      const { POST } = test
+      // PNG magic header bytes as sample binary payload
+      const payload = Buffer.from([0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A])
+      const { data, headers, status } = await POST('/echo-binary', payload, {
+        headers: { 'Content-Type': 'application/octet-stream' },
+        responseType: 'arraybuffer',
+      })
+      expect(status).to.equal(200)
+      expect(headers['content-type']).to.match(/application\/octet-stream/)
+      expect(Buffer.isBuffer(data)).to.equal(true)
+      expect(data.equals(payload)).to.equal(true)
+    })
+
+  })
+
+
   describe ('logs', ()=> {
 
     let log = test.log()

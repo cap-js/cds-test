@@ -169,12 +169,14 @@ module.exports = function report_on (test,o) {
       if (s == 0 || files.length == 1) return LF+`${color} ${t} ${kind} ${RESET}`
       else return LF+`${color} ${t} in ${s} suite${s==1?'':'s'} ${kind} ${RESET}`
     }
-    const _recent = require('os').userInfo().homedir + '/.cds-test-recent.json'
-    const recent = require('fs').existsSync(_recent) ? require(_recent) : {}
+    const fs = require('fs'), os = require('os')
+    const _cds = os.userInfo().homedir + '/.cds', _recent = _cds+'/test-recent.json'
+    const recent = fs.existsSync(_recent) ? require(_recent) : {}
     if (!o.recent && !o.passed && !o.failed) recent.options = {...o, argv:process.argv.slice(2) }
     if (!o.failed) recent.passed = suites.passed // only update recent.passed if not called w/ --failed
     if (!o.passed) recent.failed = suites.failed // only update recent.failed if not called w/ --passed
-    require('fs').writeFileSync(_recent, JSON.stringify(recent,null,2))
+    fs.mkdirSync(_cds, { recursive: true })
+    fs.writeFileSync(_recent, JSON.stringify(recent,null,2))
   }
 
 }
