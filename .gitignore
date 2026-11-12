@@ -11,3 +11,4 @@ gen/
 *.sqlite-shm
 *.sqlite-wal
 .vscode/
+.cache
