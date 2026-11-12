@@ -26,7 +26,7 @@ describe('cds.test startup options', () => {
   it('selects run projects directly instead of passing --project to core', async () => {
     const { test, cds, calls, hooks } = fixture()
     test('run', 'app', '--with-mocks')
-    assert.equal(cds.root, '/root/app')
+    assert.equal(cds.root, path.resolve('/root', 'app'))
     await hooks[0]()
     assert.deepEqual(Array.from(calls[0]), ['--mocked', '--port', '0'])
   })
@@ -51,7 +51,7 @@ describe('cds.test startup options', () => {
     const { test, cds, calls, hooks } = fixture()
     test('app', '--with-mocks')
     await hooks[0]()
-    assert.equal(cds.root, '/root/app')
+    assert.equal(cds.root, path.resolve('/root', 'app'))
     assert.deepEqual(Array.from(calls[0]), ['--mocked', '--in-memory?', '--port', '0'])
   })
 
