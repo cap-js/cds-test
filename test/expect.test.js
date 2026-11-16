@@ -324,6 +324,17 @@ describe ('miscellaneous...', ()=>{
     return // Not supported:
   })
 
+  it('rejects: works with native promises and thenables', async () => {
+    // native Promise
+    await expect(Promise.reject(new Error('boom'))).rejects.toThrow('boom')
+    await expect(Promise.reject(new Error('boom'))).rejects.toThrow(/boo/)
+    // thenable that is not instanceof Promise (e.g. a promise from vm.runInNewContext)
+    const thenable = { then: (_, rej) => rej(new Error('boom')) }
+    expect(thenable instanceof Promise).to.be.false
+    await expect(thenable).rejects.toThrow('boom')
+    await expect(thenable).rejects.toThrow(/boo/)
+  })
+
   process.env.DEBUG ? it.skip('does not clean up stack traces when DEBUG is set') :
   it('cleans up stack traces to show test file at top', () => {
     try {
