@@ -6,6 +6,18 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
+## [1.1.0] - tbd
+
+### Added
+
+- `expect(...).rejects` and `.resolves` now work with thenables, not just native `Promise` instances.
+
+### Fixed
+
+- Starting a test server no longer fails when DK CLI flags are present in the environment.
+- `expect(...).to.be.fulfilled` / `.rejected` are now properly awaitable.
+- Accessing optional test dependencies no longer throws if they are not installed.
+
 ## [1.0.2] - 2026-08-04
 
 ### Fixed
