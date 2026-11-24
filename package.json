@@ -40,5 +40,8 @@
   },
   "devDependencies": {
     "@cap-js/sqlite": "^2 || ^3"
+  },
+  "dependencies": {
+    "undici": "^7.30.2"
   }
 }
