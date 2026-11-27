@@ -64,6 +64,10 @@ describe('cds_test', ()=>{
   })
 
   describe ('axios', ()=> {
+    cds.once('bootstrap', app => {
+      app.get('/test-error', (_, res) => res.status(500).send('Internal Server Error'))
+    })
+
     it('should support axios', ()=> {
       expect (test.axios).to.exist
       expect (test.get).to.exist
@@ -81,32 +85,62 @@ describe('cds_test', ()=>{
       expect (DEL).to.exist
     })
 
-    it('should support axios validateStatus', async ()=> {
-      const { GET } = test
-      await GET('/foo').catch(err => { expect(err.response.status).to.equal(404) })
-      test.axios.defaults.validateStatus = (status) => status === 404
-      await GET('/foo')
-
-      for (let v of [false, undefined, null]) {
-        test.axios.defaults.validateStatus = v
-        await GET('/foo')
-      }
+    it('should resolve 4xx responses', async ()=> {
+      expect((await test.GET('/foo')).status).to.equal(404)
     })
 
-    it('should support axios maxRedirects', async ()=> {
-      const { GET } = test
-      await GET('/redirect')
-      test.axios.defaults.maxRedirects = 0
-      await GET('/redirect').catch(err => { expect(err.response.status).to.equal(302) })
+    it('should resolve 5xx responses', async ()=> {
+      expect((await test.GET('/test-error')).status).to.equal(500)
     })
 
-    // TODO timeouts lead to open handles reported by test runners
-    it.skip('should support axios timeouts', async ()=> {
-      const { GET } = test
-      const { data } = await GET `/odata/v4/catalog/delay(ms='50')`
-      expect(data.value).to.match(/50/)
-      test.axios.defaults.timeout = 10
-      await expect(GET `/odata/v4/catalog/delay(ms='50')`).to.eventually.be.rejectedWith(/timeout/i)
+    describe('client configuration', ()=> {
+      let validateStatus, maxRedirects, timeout
+
+      beforeAll(() => {
+        ;({ validateStatus, maxRedirects, timeout } = test.defaults)
+      })
+
+      afterEach(() => {
+        Object.assign(test.defaults, { validateStatus, maxRedirects, timeout })
+      })
+
+      it('should reject responses with a defaults validateStatus predicate', async ()=> {
+        test.axios.defaults.validateStatus = status => status < 400
+        const error = await test.GET('/foo').catch(err => err)
+        expect(error).to.be.instanceOf(Error)
+        expect(error.response).to.exist
+        expect(error.message).to.match(/not found|status code 404/i)
+        expect(error.response.status).to.equal(404)
+      })
+
+      it('should reject responses with a per-request validateStatus predicate', async ()=> {
+        const error = await test.GET('/foo', { validateStatus: status => status < 400 }).catch(err => err)
+        expect(error).to.be.instanceOf(Error)
+        expect(error.response).to.exist
+        expect(error.message).to.match(/not found|status code 404/i)
+        expect(error.response.status).to.equal(404)
+      })
+
+      it('should accept responses with a per-request predicate despite restrictive defaults', async ()=> {
+        test.axios.defaults.validateStatus = status => status < 400
+        expect((await test.GET('/foo', { validateStatus: status => status === 404 })).status).to.equal(404)
+        expect((await test.GET('/test-error', { validateStatus: status => status === 500 })).status).to.equal(500)
+      })
+
+      it('should support axios maxRedirects', async ()=> {
+        expect((await test.GET('/redirect')).status).to.equal(200)
+        test.axios.defaults.maxRedirects = 0
+        expect((await test.GET('/redirect')).status).to.equal(302)
+      })
+
+      // TODO timeouts lead to open handles reported by test runners
+      it.skip('should support axios timeouts', async ()=> {
+        const { GET } = test
+        const { data } = await GET `/odata/v4/catalog/delay(ms='50')`
+        expect(data.value).to.match(/50/)
+        test.axios.defaults.timeout = 10
+        await expect(GET `/odata/v4/catalog/delay(ms='50')`).to.eventually.be.rejectedWith(/timeout/i)
+      })
     })
   })
 
